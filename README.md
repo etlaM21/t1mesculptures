@@ -31,4 +31,6 @@ Points, describing the shape(s) in each frame of the animation, are then connect
 Next, each frame is translated along the third axis in space. The points become the connected vertices and the connections become edges, both describing the 3D mesh.  
 At last, I am using Blender to build faces of the mesh and ensure the 3D object is a manifold, so that it is ready to be 3D printed.
 
+#### Find out more about the algorithm here: [Origin To Destination Approach](./algorithm/Origin%20To%20Destination%20Approach.md)
+
 ![top down animation](./img/ezgif-4-820052d9f6.gif)
