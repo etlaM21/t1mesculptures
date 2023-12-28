@@ -1,8 +1,13 @@
 import cv2 as cv
 import numpy as np
+import math
 from scipy.spatial import distance
 from skimage.measure import find_contours, approximate_polygon, subdivide_polygon
 
+def normalized(a, axis=-1, order=2):
+    l2 = np.atleast_1d(np.linalg.norm(a, order, axis))
+    l2[l2==0] = 1
+    return a / np.expand_dims(l2, axis)
 
 class Frame:
     def __init__(self, filepath):
@@ -116,8 +121,8 @@ class Frame:
         cv.drawContours(contouronmask,OriginFrame.contours,OriginFrameContourIndex,(255,0,0),1)
         contouronmask = cv.merge((DestinationFrame.mask, np.zeros((540,540), np.uint8), contouronmask))
         # Showing the result
-        cv.imshow("Contour on mask", contouronmask)
-        cv.waitKey(0)
+        # cv.imshow("Contour on mask", contouronmask)
+        # cv.waitKey(0)
         nonzeroMask = cv.findNonZero(DestinationFrame.mask)
         nonzeroMask2D = nonzeroMask.reshape(nonzeroMask.shape[0], 2)
         # print(nonzeroMask2D)
@@ -130,8 +135,8 @@ class Frame:
         print(DestinationFrame.mask.shape)
         print(nonzeroMask2D.shape)
         print(OriginFrame.contours[OriginFrameContourIndex].shape)
-        cv.imshow("Mask", nonzeromaskimg)
-        cv.waitKey(0) 
+        # cv.imshow("Mask", nonzeromaskimg)
+        # cv.waitKey(0) 
         o_inner = []
         o_outer = []
         print("OriginFrame.contours, length: ", len(OriginFrame.contours[OriginFrameContourIndex]))
@@ -206,8 +211,8 @@ class Frame:
             cv.circle(contourSplit, pixel[0], 1, (0, 255, 0), -1)
         for pixel in d_outer:
             cv.circle(contourSplit, pixel[0], 1, (255, 0, 0), -1)
-        cv.imshow("Split Contours", contourSplit)
-        cv.waitKey(0)
+        # cv.imshow("Split Contours", contourSplit)
+        # cv.waitKey(0)
         
         '''
         o_outer = cv.subtract(cv.normalize(OriginFrame.contours[OriginFrameContourIndex], OriginFrame.contours[OriginFrameContourIndex], 0.0, 1.0, cv.NORM_MINMAX), cv.normalize(DestinationFrame.mask, DestinationFrame.mask, 0.0, 1.0, cv.NORM_MINMAX))
@@ -293,15 +298,23 @@ class Frame:
                     print("ERROR: Connected Pixel is not in the list.")
             
             # Create a black image
-            img_ways = np.zeros((540,540,3), np.uint8)
+            pix_travel_ways = np.zeros((540,540,3), np.uint8)
+            
+            for i in range(len(self.boundaries)):
+                cv.rectangle(pix_travel_ways, (int(self.boundaries[i][0]), int(self.boundaries[i][1])), \
+                (int(self.boundaries[i][0]+self.boundaries[i][2]), int(self.boundaries[i][1]+self.boundaries[i][3])), (50, 50, 50), 1)
+            for i in range(len(ConnectionFrame.boundaries)):
+                cv.rectangle(pix_travel_ways, (int(ConnectionFrame.boundaries[i][0]), int(ConnectionFrame.boundaries[i][1])), \
+                (int(ConnectionFrame.boundaries[i][0]+ConnectionFrame.boundaries[i][2]), int(ConnectionFrame.boundaries[i][1]+ConnectionFrame.boundaries[i][3])), (50, 50, 50), 1)
+
             for connectedPixels in tempPixelConnections:
-                cv.line(img_ways, connectedPixels[0], connectedPixels[1],(0,0,255),1) 
+                cv.line(pix_travel_ways, connectedPixels[0], connectedPixels[1],(0,0,255),1) 
                 
-            self.pixelConnections = tempPixelConnections
+            self.pixelConnections.append(tempPixelConnections)
             
             # img_ways = cv.normalize(img_ways, img_ways, 0.0, 1.0, cv.NORM_MINMAX)
             
-            pix_travel_ways = img_ways
+            # pix_travel_ways = img_ways
             for pixel in o_outer:
                 cv.circle(pix_travel_ways, pixel[0], 1, (255, 0, 0), -1)
             for pixel in d_inner:
@@ -317,21 +330,16 @@ class Frame:
             for crnr in ConnectionFrame.corners:
                 for p in crnr:
                     cv.circle(pix_travel_ways, (p[0],p[1]), 3,(255, 255, 255),-1)
-            
-            for i in range(len(self.boundaries)):
-                cv.rectangle(pix_travel_ways, (int(self.boundaries[i][0]), int(self.boundaries[i][1])), \
-                (int(self.boundaries[i][0]+self.boundaries[i][2]), int(self.boundaries[i][1]+self.boundaries[i][3])), (0, 255, 0), 2)
-            for i in range(len(ConnectionFrame.boundaries)):
-                cv.rectangle(pix_travel_ways, (int(ConnectionFrame.boundaries[i][0]), int(ConnectionFrame.boundaries[i][1])), \
-                (int(ConnectionFrame.boundaries[i][0]+ConnectionFrame.boundaries[i][2]), int(ConnectionFrame.boundaries[i][1]+ConnectionFrame.boundaries[i][3])), (0, 255, 0), 2)
 
             cv.imshow('Pixel Travel Ways', pix_travel_ways)
             cv.waitKey(0)
     
     def connectCorners(self, ConnectionFrame):
-        print(np.asarray(self.pixelConnections).reshape(np.asarray(self.pixelConnections).shape[0], 2))
+        # print(np.asarray(self.pixelConnections).reshape(np.asarray(self.pixelConnections).shape[0], 2))
         for i in range(len(self.corners)):
             contour = self.contours[i].reshape(self.contours[i].shape[0], 2)
+            cornerDirection = list()
+            contourTrace = np.zeros((540,540,3), np.uint8)
             for o in range(len(self.corners[i])):
                 previousCorner = o - 1
                 if(previousCorner < 0): previousCorner = len(self.corners)
@@ -339,18 +347,64 @@ class Frame:
                 if(nextCorner >= len(self.corners[i])): nextCorner = 0
                 # print(contour)
                 # print(self.corners[i][o])
-                startContourIndex = np.where((contour == self.corners[i][o]).all(axis=1))
-                # print("startCorner = ", self.corners[i][o], " startContour = ", contour[startContourIndex[0][0]], "startContourIndex = ", startContourIndex[0][0])
-                previousContourIndex = np.where((contour == self.corners[i][previousCorner]).all(axis=1))
-                print("previousCorner = ", self.corners[i][previousCorner], " previousContour = ", contour[previousContourIndex[0][0]], "previousContourIndex = ", previousContourIndex[0][0])
-                nextContourIndex = np.where((contour == self.corners[i][nextCorner]).all(axis=1))
-                print("nextCorner = ", self.corners[i][nextCorner], " nextContour = ", contour[nextContourIndex[0][0]], "nextCorner = ", nextContourIndex[0][0])
+                startContourIndex = np.where((contour == self.corners[i][o]).all(axis=1))[0][0]
+                print("startCorner = ", self.corners[i][o], " startContour = ", contour[startContourIndex], "startContourIndex = ", startContourIndex)
+                previousContourIndex = np.where((contour == self.corners[i][previousCorner]).all(axis=1))[0][0]
+                print("previousCorner = ", self.corners[i][previousCorner], " previousContour = ", contour[previousContourIndex], "previousContourIndex = ", previousContourIndex)
+                nextContourIndex = np.where((contour == self.corners[i][nextCorner]).all(axis=1))[0][0]
+                print("nextCorner = ", self.corners[i][nextCorner], " nextContour = ", contour[nextContourIndex], "nextContourIndex = ", nextContourIndex)
                 currentContourIndex = previousContourIndex
+                #
+                # We traverse the whole contour in both directions until we hit the next or previous corner and calculate a median directional vector of connected pixels
+                #
                 direction = None
+                # !! THIS WON'T WORK FOR CORNERS AT THE START OR END OF CONTOUR !!
+                previousContourIndexDist = startContourIndex - previousContourIndex
+                nextContourIndexDist = nextContourIndex - startContourIndex
                 while(currentContourIndex != nextContourIndex):
                     currentContourIndex = currentContourIndex + 1
                     if(currentContourIndex >= len(contour)): currentContourIndex = 0
+                    directionInfluenceFactor = abs((currentContourIndex - previousContourIndex) / previousContourIndexDist - 1)
+                    if(currentContourIndex > startContourIndex): directionInfluenceFactor = (nextContourIndex - currentContourIndex) / nextContourIndexDist
+                    connectedPixels = self.pixelConnections[i][currentContourIndex]
+                    distance = [connectedPixels[0][0] - connectedPixels[1][0], connectedPixels[0][1] - connectedPixels[1][1]]
+                    norm = math.sqrt(distance[0] ** 2 + distance[1] ** 2)
+                    # currentDirection = [distance[0] / norm * directionInfluenceFactor, distance[1] / norm * directionInfluenceFactor]
+                    currentDirection = normalized(np.subtract(connectedPixels[1], connectedPixels[0]) * directionInfluenceFactor)[0]
+                    if direction is not None:
+                        # direction[0] += currentDirection[0]
+                        # direction[1] += currentDirection[1]
+                        direction = np.add(direction, currentDirection) / 2
+                    else: direction = currentDirection
+                    norm = math.sqrt(direction[0] ** 2 + direction[1] ** 2)
+                    # direction = [direction[0] / norm, direction[1] / norm]
+                    direction = normalized(direction)[0]
 
+                    # Debug: Show picture of traced contour
+                    # cv.line(contourTrace, contour[currentContourIndex], contour[nextContourIndex],(0, 255, 0),1)
+                    cv.circle(contourTrace, self.pixelConnections[i][currentContourIndex][0], 3,(0, 255, 255),-1)
+                    cv.circle(contourTrace, self.pixelConnections[i][currentContourIndex][1], 3,(255, 0, 0),-1)
+                
+                # Debug: Show picture of connected Corners
+                # cv.line(contourTrace, self.corners[i][o], self.corners[i][nextCorner],(0, 0, 255),1) 
+
+                print("corner #", o, " direction:", direction)
+                cornerDirection.append(direction)
+            
+            cv.imshow('Contour Trace', contourTrace)
+            cv.waitKey(0)
+            # Create a black image
+            cornerDirectionShowcase = np.zeros((540,540,3), np.uint8)
+            
+            for index, crnr in enumerate(self.corners[i]):
+                cv.circle(cornerDirectionShowcase, crnr, 3,(255, 255, 255),-1)
+                cv.line(cornerDirectionShowcase, crnr, (round(crnr[0] + cornerDirection[index][0] * 100), round(crnr[1] + cornerDirection[index][1] * 100)),(0,0,255),1) 
+            
+            for crnr in ConnectionFrame.corners[i]:
+                cv.circle(cornerDirectionShowcase, crnr, 3,(255, 255, 255),-1)
+            
+            cv.imshow('Corner Direction', cornerDirectionShowcase)
+            cv.waitKey(0)
                 
         tempConnectedCorners = []
         # Find Connected Pixel in our tempPixelConnections Array and compare distances
@@ -365,6 +419,9 @@ class Frame:
         else:
             print("ERROR: Corner doesn't share the position with a connected Pixel.")
 
-origin = Frame('./_export/small/Comp 1_0010.png')
-destination = Frame('./_export/small/Comp 1_0025.png')
+origin = Frame('./algorithm/code/_export/small/Comp 1_0024.png')
+destination = Frame('./algorithm/code/_export/small/Comp 1_0025.png')
+            
+# origin = Frame('./_export/small/Comp 1_0010.png')
+# destination = Frame('./_export/small/Comp 1_0025.png')
 origin.setNextFrame(destination)
