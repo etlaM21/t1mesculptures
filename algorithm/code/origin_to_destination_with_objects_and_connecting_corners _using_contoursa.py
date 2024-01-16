@@ -83,8 +83,8 @@ class Frame:
             for p in crnr:
                  cv.circle(self.image, (p[0],p[1]), 3,255,-1)
         # Showing the result
-        # cv.imshow("Polygons", self.image)
-        # cv.waitKey(0)
+        cv.imshow("Polygons", self.image)
+        cv.waitKey(0)
         return corners
     
     def setNextFrame(self, Frame):
@@ -121,8 +121,8 @@ class Frame:
         cv.drawContours(contouronmask,OriginFrame.contours,OriginFrameContourIndex,(255,0,0),1)
         contouronmask = cv.merge((DestinationFrame.mask, np.zeros((540,540), np.uint8), contouronmask))
         # Showing the result
-        # cv.imshow("Contour on mask", contouronmask)
-        # cv.waitKey(0)
+        cv.imshow("Contour on mask", contouronmask)
+        cv.waitKey(0)
         nonzeroMask = cv.findNonZero(DestinationFrame.mask)
         nonzeroMask2D = nonzeroMask.reshape(nonzeroMask.shape[0], 2)
         # print(nonzeroMask2D)
@@ -135,8 +135,8 @@ class Frame:
         print(DestinationFrame.mask.shape)
         print(nonzeroMask2D.shape)
         print(OriginFrame.contours[OriginFrameContourIndex].shape)
-        # cv.imshow("Mask", nonzeromaskimg)
-        # cv.waitKey(0) 
+        cv.imshow("Mask", nonzeromaskimg)
+        cv.waitKey(0) 
         o_inner = []
         o_outer = []
         print("OriginFrame.contours, length: ", len(OriginFrame.contours[OriginFrameContourIndex]))
@@ -419,9 +419,9 @@ class Frame:
         else:
             print("ERROR: Corner doesn't share the position with a connected Pixel.")
 
-origin = Frame('./algorithm/code/_export/small/Comp 1_0024.png')
-destination = Frame('./algorithm/code/_export/small/Comp 1_0025.png')
+# origin = Frame('./algorithm/code/_export/small/Comp 1_0024.png')
+# destination = Frame('./algorithm/code/_export/small/Comp 1_0025.png')
             
-# origin = Frame('./_export/small/Comp 1_0010.png')
-# destination = Frame('./_export/small/Comp 1_0025.png')
+origin = Frame('./algorithm/code/_export/small/Comp 1_0010.png')
+destination = Frame('./algorithm/code/_export/small/Comp 1_0025.png')
 origin.setNextFrame(destination)
