@@ -5,6 +5,7 @@ from scipy.spatial import distance
 from skimage.measure import find_contours, approximate_polygon, subdivide_polygon, marching_cubes
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+from stl import mesh
 
 def normalized(a, axis=-1, order=2):
     l2 = np.atleast_1d(np.linalg.norm(a, order, axis))
@@ -94,8 +95,10 @@ for i, frame in enumerate(frames):
 print(pointcloud.shape)
 
 # Use marching cubes to obtain the surface mesh of these ellipsoids
-verts, faces, normals, values = marching_cubes(pointcloud, level=None, spacing=(1.0, 1.0, 1.0), gradient_direction='descent', step_size=5, allow_degenerate=False, method='lewiner', mask=None)
+verts, faces, normals, values = marching_cubes(pointcloud, level=None, spacing=(1.0, 1.0, 1.0), gradient_direction='descent', step_size=1, allow_degenerate=False, method='lewiner', mask=None)
 
+
+'''
 # Display resulting triangular mesh using Matplotlib. This can also be done
 # with mayavi (see skimage.measure.marching_cubes docstring).
 fig = plt.figure(figsize=(10, 10))
@@ -112,3 +115,13 @@ ax.set_zlim(0, 250)  # c = 16
 
 plt.tight_layout()
 plt.show()
+'''
+
+# Create the mesh object
+output_mesh = mesh.Mesh(np.zeros(faces.shape[0], dtype=mesh.Mesh.dtype))
+for i, f in enumerate(faces):
+    for j in range(3):
+        output_mesh.vectors[i][j] = verts[f[j], :]
+
+# Save the mesh to file
+output_mesh.save('output_mesh.stl')
