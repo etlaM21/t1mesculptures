@@ -1,6 +1,8 @@
 '''
 Malte Hillebrand's implementation of marching cubes
 2024
+
+Source:https://www.youtube.com/watch?v=1FyokQuXmsc
 '''
 import math
 import numpy as np
@@ -23,6 +25,19 @@ DirectionX = 0
 DirectionY = 1
 DirectionZ = 2
 
+'''
+Vertex and edge layout:
+
+            6             7
+            +-------------+               +-----6-------+   
+          / |           / |             / |            /|   
+        /   |         /   |          11   7         10   5
+    2 +-----+-------+  3  |         +-----+2------+     |   
+      |   4 +-------+-----+ 5       |     +-----4-+-----+   
+      |   /         |   /           3   8         1   9
+      | /           | /             | /           | /       
+    0 +-------------+ 1             +------0------+        
+'''
 
 def interpolate(a, b, level):
     # zero values to level
@@ -109,7 +124,8 @@ def marching(volume, level = 0.0):
     # convert ids to indexes
     order_of_ids = {id:order for order, id in enumerate(vertex_ids)}
     for triangle_corners in triangle_ids:
-        triangles.append(filter(lambda item: item is not None, [order_of_ids.get(c for c in triangle_corners)]))
+        # triangles.append(filter(lambda item: item is not None, [order_of_ids.get(c for c in triangle_corners)]))
+        triangles.append([order_of_ids.get(c for c in triangle_corners)])
         # triangles.append([order_of_ids[c] for c in triangle_corners])
 
     return vertices, triangles
