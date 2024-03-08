@@ -8,16 +8,15 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import MarchingNumPy.MarchingNumPy as MarchingNumPy
 from stl import mesh
 
-def normalized(a, axis=-1, order=2):
-    l2 = np.atleast_1d(np.linalg.norm(a, order, axis))
-    l2[l2==0] = 1
-    return a / np.expand_dims(l2, axis)
+THRESHHOLD = 127
+FPS = 60    
 
 class Frame:
     def __init__(self, filepath):
-        self.threshhold = 127
+        self.threshhold = THRESHHOLD
         self.filepath = filepath
         self.image = cv.imread(filepath)
+        self.height, self.width, self.channels = self.image.shape
         self.imagegray = self.getGrayImage(self.image)
         self.mask = self.getThreshhold()
         self.outlines = self.getOutlines()
@@ -30,6 +29,7 @@ class Frame:
         return img_gray
 
     def getThreshhold(self):
+        gaussian = cv.GaussianBlur(self.imagegray, (3, 3), 0)
         threshhold, img_treshhold = cv.threshold(self.imagegray, self.threshhold, 255, cv.THRESH_BINARY)
         return img_treshhold
 
@@ -60,7 +60,7 @@ class Frame:
 # destination = Frame('./algorithm/code/_export/small/Comp 1_0025.png')
 # origin.setNextFrame(destination)
 
-path = os.fsencode("./_export/small/")
+path = os.fsencode("./_export/GENESIS")
 frames = []
 
 with os.scandir(path) as it:
@@ -70,7 +70,10 @@ with os.scandir(path) as it:
             # print(entry.name, entry.path)
             frames.append(Frame(filename))
 
-print(len(frames))
+totalFrames = len(frames)
+
+print(f"Total length: {totalFrames} Frames at {FPS} FPS")
+
 '''
 pointcloud = np.zeros((540, 540 ,2))
 
@@ -84,29 +87,37 @@ for i, frame in enumerate(frames):
 print(pointcloud.shape)
 '''
 # Preallocate pointcloud array with the correct dimensions
-pointcloud = np.zeros((540, 540, len(frames)))
+pointcloud = np.zeros((frames[0].width, frames[0].height, len(frames)))
 
 for i, frame in enumerate(frames):
     if i < len(frames) - 1:  # Ensure we don't go out of bounds
         frames[i].setNextFrame(frames[i+1])
         # twoFrameSlice = np.stack((frames[i].mask, frames[i].nextFrame.mask), axis=2)
         pointcloud[:, :, i] = frames[i].mask
-        # print(i)
 
-print(pointcloud.shape)
+print(f"Pointcloud generated with shape {pointcloud.shape}: min value = {pointcloud.min()}, max value = {pointcloud.max()}")
+level = THRESHHOLD
+print(f"Processing pointcloud at level {level}")
 
 # Use marching cubes to obtain the surface mesh of these ellipsoids
-# verts, faces, normals, values = marching_cubes(pointcloud, level=None, spacing=(1.0, 1.0, 1.0), gradient_direction='descent', step_size=1, allow_degenerate=False, method='lewiner', mask=None)
-vertices, geometry = MarchingNumPy.marching_cubes_lorensen(pointcloud, 0)
-
-
+# vertices (NDArray), geometry (NDArray) =  MarchingNumPy.MarchingCubesLorensen.marching_cubes_lorensen(volume, level=0.0, *, interpolation='LINEAR', step_size=1, resolve_ambiguous=True)
+# vertices, faces = MarchingNumPy.marching_cubes_lorensen(np.load("MarchingNumPy/example_data/test_volume.npy"), level=level, interpolation='LINEAR', step_size=1, resolve_ambiguous=True)
+vertices, faces = MarchingNumPy.marching_cubes_lorensen(np.pad(pointcloud, 1), level=level, interpolation='COSINE', step_size=0.5, resolve_ambiguous=True)
+print(f"Marching Numpy: {len(vertices)} Vertices, {len(faces)} Faces")
+maxHeight = (totalFrames / FPS) * (max(np.shape(pointcloud)[0], np.shape(pointcloud)[1]) / FPS)
+print(f"Rescaling Output with a maximum height of {maxHeight}")
+for i, f in enumerate(vertices): 
+    relHeight = vertices[i][2] / totalFrames
+    newHeight = relHeight * maxHeight
+    vertices[i][2] = newHeight
 
 # Display resulting triangular mesh using Matplotlib. This can also be done
 # with mayavi (see skimage.measure.marching_cubes docstring).
+'''
 fig = plt.figure(figsize=(10, 10))
 ax = fig.add_subplot(111, projection='3d')
 
-# Fancy indexing: `verts[faces]` to generate a collection of triangles
+# Fancy indexing: `verts[faces]` to generate a collection of faces
 meshPoly3D = Poly3DCollection([geometry])
 meshPoly3D.set_edgecolor('k')
 ax.add_collection3d(meshPoly3D)
@@ -117,13 +128,13 @@ ax.set_zlim(0, 250)  # c = 16
 
 plt.tight_layout()
 plt.show()
-
+'''
 
 # Create the mesh object
-output_mesh = mesh.Mesh(np.zeros(vertices.shape[0], dtype=mesh.Mesh.dtype))
-for i, f in enumerate(vertices):
+output_mesh = mesh.Mesh(np.zeros(faces.shape[0], dtype=mesh.Mesh.dtype))
+for i, f in enumerate(faces):
     for j in range(3):
         output_mesh.vectors[i][j] = vertices[f[j], :]
 
 # Save the mesh to file
-output_mesh.save('output_mesh.stl')
+output_mesh.save('GENESIS.stl')
