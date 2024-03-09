@@ -41,3 +41,38 @@ At last, I am using Blender to build faces of the mesh and ensure the 3D object 
 All approaches are tested with the following animation as it covers all edge case: circles, corners, inner holes and combination / separation of shapes.
 
 ![test animation](./img/testanimation_01.gif)
+
+### _Sizing of dimensions._
+
+While the X and Y dimensions of the resulting sculpture from a video have a given ratio, the Z axis derived from the frames does not have a relative height to the size of the frames.
+
+When applying the scaling factor to the temporal dimension, the following formula is used to get the height of each frame and its corresponding vertices:
+`Zx = ((totaNumberOfFrames / FPS) * longestSide) * x`
+
+A fixed height for a single "step" (1 second in time) is derived from the longest side of the frame (width or height). A pixel travelling linearly across the longer side of the frame within exactly one second will result in a 45 degree cylinder.
+
+So far, this is in no way "logical". It's simply aesthically pleasing and still provides a rule: Eyer angle below 45 degrees means pixel(s) are "moving" faster than 1 second per longest side.
+
+## _The big idea_
+
+**Approaching time and space as eachother.**
+
+- TIME becomes SPACE / SPACE becomes TIME
+
+**Rethinking what time and space mean**
+
+1. Shaping time to create a space and shping space to create time (in form of an animation)
+   - Easy to use tool
+     - Two modes: time to space & space to time
+     - Mesh optimizer
+     - Previews (?)
+2. Seeing space as time and time as space
+   - Rethinking time: Getting a sense of its scale
+   - Rethinking space: How a 3D object will look as 2D slices
+
+
+### Other art forms shaping the understanding of time
+- Animation curves
+- Hartmut Rosa schrumpfende Weltkarte
+- Charles Joseph Minard,  Napoleon’s disastrous invasion of Russia in 1812
+![Minard Map](img/Minard.jpg)
