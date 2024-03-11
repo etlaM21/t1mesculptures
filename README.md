@@ -73,10 +73,27 @@ So far, this is in no way "logical". It's simply aesthically pleasing and still 
 
 
 ### Other art forms shaping the understanding of time
+
+#### Data Visualization
+
 - Animation curves
 - Hartmut Rosa schrumpfende Weltkarte
 - Charles Joseph Minard,  Napoleon’s disastrous invasion of Russia in 1812
 ![Minard Map](img/Minard.jpg)
+
+#### Movies
+
+- [**Memento** by Christopher Nolan](https://en.wikipedia.org/wiki/Memento_(film))
+- [**Inception** by Christopher Nolan](https://en.wikipedia.org/wiki/Inception)
+- [**Tenet** by Christopher Nolan](https://en.wikipedia.org/wiki/Tenet_(film))
+- [**Enter the Void** by Gaspar Noe](https://en.wikipedia.org/wiki/Enter_the_Void)
+- [**In Time** by Andrew Nicool](https://en.wikipedia.org/wiki/In_Time)
+- [**Source Code** by Duncan Jones](https://en.wikipedia.org/wiki/Source_Code)
+- [**Back To The Future** by Robert Zemeckis](https://en.wikipedia.org/wiki/Back_to_the_Future)
+- [**Frequency** by Gregory Hoblit](https://en.wikipedia.org/wiki/Frequency_(2000_film))
+- [**Time Lapse** by Bradles D. King](https://en.wikipedia.org/wiki/Time_Lapse_(film))
+- [**Edge of Tomorrow** by Doug Liman](https://en.wikipedia.org/wiki/Edge_of_Tomorrow)
+- [**Looper** by Rian Johnson](https://en.wikipedia.org/wiki/Looper_(film))
 
 ---
 ## _*TO-DO*_
