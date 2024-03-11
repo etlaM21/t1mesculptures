@@ -71,13 +71,31 @@ So far, this is in no way "logical". It's simply aesthically pleasing and still 
    - Rethinking space: How a 3D object will look as 2D slices
    - Restriction: Using time to create space and vice-versa
 
+**Evaluating users**
+
+- interviews
+- comparing artworks created
+
+**Talk to experts**
+
+- sociology professors
+- psychlogy professors
+- therapeutic / behavorial professors
+
+
 
 ### Other art forms shaping the understanding of time
 
 #### Data Visualization
 
 - Animation curves
+
+![AE curves](img/speedgraph.jpg)
+
 - Hartmut Rosa schrumpfende Weltkarte
+
+![Rosa Karte](img/rosa.png)
+
 - Charles Joseph Minard,  Napoleon’s disastrous invasion of Russia in 1812
 
 ![Minard Map](img/Minard.jpg)
@@ -121,6 +139,28 @@ So far, this is in no way "logical". It's simply aesthically pleasing and still 
 ![Muybridge](img/mybridge.png)
 
 -> _DIFFERENCE:_ All are implying time by trying to depict movement (or actually moving), none _show_ time!
+
+#### Contemporary Art
+
+- John Salvest, "Newspaper Columns", 1997
+
+![Newspapers](img/newspaper3.jpg)
+
+- John Salvest, "Reliquary", 1991- 
+
+![Reliquary](img/reliquary.jpg)
+
+- Robert Farber, "055", 1981 From A Collaboration with Time-Deterioration Series
+
+![Farber](img/farber.jpg)
+
+- Kellyann Burns, "3:24 PM 8/14/17"
+
+![KellyAnn](img/kellyann.jpg)
+
+- Johanna Burke, "MAKE TIME", 2018
+
+![Burke](img/burke.jpg)
 
 #### Movies
 
