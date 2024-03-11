@@ -53,7 +53,7 @@ A fixed height for a single "step" (1 second in time) is derived from the longes
 
 So far, this is in no way "logical". It's simply aesthically pleasing and still provides a rule: Eyer angle below 45 degrees means pixel(s) are "moving" faster than 1 second per longest side.
 
-## _The big idea_
+## _Time as a medium_
 
 **Approaching time and space as eachother.**
 
@@ -65,10 +65,11 @@ So far, this is in no way "logical". It's simply aesthically pleasing and still 
    - Easy to use tool
      - Two modes: time to space & space to time
      - Mesh optimizer
-     - Previews (?)
+     - Previews
 2. Seeing space as time and time as space
    - Rethinking time: Getting a sense of its scale
    - Rethinking space: How a 3D object will look as 2D slices
+   - Restriction: Using time to create space and vice-versa
 
 
 ### Other art forms shaping the understanding of time
@@ -84,6 +85,7 @@ So far, this is in no way "logical". It's simply aesthically pleasing and still 
 
 - User Interface
   - 3D Viewer
+    - [VTK](https://pypi.org/project/vtk/)
   - 2 tabs: timeview and spaceview
   - import / export
   - blender automation (?)
