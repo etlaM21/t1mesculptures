@@ -53,6 +53,9 @@ A fixed height for a single "step" (1 second in time) is derived from the longes
 
 So far, this is in no way "logical". It's simply aesthically pleasing and still provides a rule: Eyer angle below 45 degrees means pixel(s) are "moving" faster than 1 second per longest side.
 
+![test height](./img/renderheight.png)
+_How the test animation is scaled as a sculpture_
+
 ## _Time as a medium_
 
 **Approaching time and space as eachother.**
