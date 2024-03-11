@@ -76,3 +76,19 @@ So far, this is in no way "logical". It's simply aesthically pleasing and still 
 - Hartmut Rosa schrumpfende Weltkarte
 - Charles Joseph Minard,  Napoleon’s disastrous invasion of Russia in 1812
 ![Minard Map](img/Minard.jpg)
+
+---
+## _*TO-DO*_
+
+### Programming
+
+- User Interface
+  - 3D Viewer
+  - 2 tabs: timeview and spaceview
+  - import / export
+  - blender automation (?)
+- Mesh optimazition
+  - [PyMesh](https://pymesh.readthedocs.io/en/latest/)
+
+### Thesis
+
