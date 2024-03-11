@@ -79,7 +79,48 @@ So far, this is in no way "logical". It's simply aesthically pleasing and still 
 - Animation curves
 - Hartmut Rosa schrumpfende Weltkarte
 - Charles Joseph Minard,  Napoleon’s disastrous invasion of Russia in 1812
+
 ![Minard Map](img/Minard.jpg)
+
+### Art
+
+- Jean Morin, "Memento Mori", first half of 17th century
+
+![Morin](img/morin.jpg)
+
+- Evert Collier, "Vanitas, Still Life with Books and Manuscripts and a Skull", 1663
+
+![Collier](img/collier.jpg)
+
+- Piedra del Sol, 1502 - 1520 (_sun calendar_)
+
+![Piedra del Sol](img/piedradelsol.JPG)
+
+- Wassily Kandinsky, "Yellow — Red — Blue", 1925 (_idea of motion on a canvas_)
+
+![Kandinsky](img/kandinsky.webp)
+
+- Umberto Boccioni, "Unique Forms of Continuity in Space", 1913 
+
+![Boccioni](img/boccioni.webp)
+
+- Jackson Pollock, "Number 34", 1949 (_action painting_)
+
+![Pollock](img/pollock.jpeg)
+
+- [Len Lye, "Witch Dance", 1965](https://www.youtube.com/watch?v=QBICitKpYNQ) (_kinetic sculptures_)
+- Edgar Degas, "Three Dancers II", 1898
+
+![Degas](img/degas.jpg)
+
+- Etienne-Jules Marey, multi-exposed Chronophotograph, 1890 College de France
+
+![Marey](img/marey.jpg)
+
+- Eadweard Muybridge, studies of human and animal locomotion. Athlete, Standing Leaps, 1879
+![Muybridge](img/mybridge.png)
+
+-> _DIFFERENCE:_ All are implying time by trying to depict movement (or actually moving), none _show_ time!
 
 #### Movies
 
