@@ -62,6 +62,8 @@ _How the test animation is scaled as a sculpture_
 
 - TIME becomes SPACE / SPACE becomes TIME
 
+**_Interesting dynamic:_ Create a time sculpture and then shape it properly afterwards to convey a certain feeling (how time felt), then translate it back into an animation.**
+
 **Rethinking what time and space mean**
 
 1. Shaping time to create a space and shping space to create time (in form of an animation)
@@ -165,6 +167,14 @@ _How the test animation is scaled as a sculpture_
 
 ![Burke](img/burke.jpg)
 
+- [Cindy Sherman](https://en.wikipedia.org/wiki/Cindy_Sherman)
+
+![Sherman](img/sherman.jpg)
+
+- Jean-Remy von Matt, ["The Lifetime Sculptures"](https://www.lifetimesculptures.com/), 2023 (?)
+
+![Remy](img/remy.webp)
+
 #### Movies
 
 - [**Memento** by Christopher Nolan](https://en.wikipedia.org/wiki/Memento_(film))
@@ -178,6 +188,10 @@ _How the test animation is scaled as a sculpture_
 - [**Time Lapse** by Bradles D. King](https://en.wikipedia.org/wiki/Time_Lapse_(film))
 - [**Edge of Tomorrow** by Doug Liman](https://en.wikipedia.org/wiki/Edge_of_Tomorrow)
 - [**Looper** by Rian Johnson](https://en.wikipedia.org/wiki/Looper_(film))
+
+#### Music
+
+- [Moor Mother](https://en.wikipedia.org/wiki/Moor_Mother)
 
 ---
 ## _*TO-DO*_
