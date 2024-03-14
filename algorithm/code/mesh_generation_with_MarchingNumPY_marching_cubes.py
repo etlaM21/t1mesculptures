@@ -60,7 +60,10 @@ class Frame:
 # destination = Frame('./algorithm/code/_export/small/Comp 1_0025.png')
 # origin.setNextFrame(destination)
 
-path = os.fsencode("./_export/small")
+# path = os.fsencode("./_export/small")
+path = os.fsencode(input("Path to image sequence: "))
+FPS = int(input("FPS: "))
+outputname = input("Outputname: ") + ".stl"
 frames = []
 
 with os.scandir(path) as it:
@@ -137,4 +140,4 @@ for i, f in enumerate(faces):
         output_mesh.vectors[i][j] = vertices[f[j], :]
 
 # Save the mesh to file
-output_mesh.save('testanimation.stl')
+output_mesh.save(outputname)
