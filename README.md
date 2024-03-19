@@ -56,7 +56,7 @@ So far, this is in no way "logical". It's simply aesthically pleasing and still 
 ![test height](./img/renderheight.png)
 _How the test animation is scaled as a sculpture_
 
-## _Time as a medium_
+## _Time as an artistic medium_
 
 **Approaching time and space as eachother.**
 
@@ -87,6 +87,14 @@ _How the test animation is scaled as a sculpture_
 - psychlogy professors
 - therapeutic / behavorial professors
 
+### Research Issue
+
+1. Synchronisation: Gleichzeitigkeit und "gleichortigkeit" führt zur _Desynchronation_; Fomo, Überförderung, Unsicherheit.
+     - _Kann die Restriktion auf das Arbeiten mit "einer Zeit" zur Resynchronisation führen?_
+2. Welche Implikation hat das kulturelle Zeitverstädnis auf die künstlerische Arbeit?
+3. Wie verändert sich künstlerisches Arbeiten, wenn eine Transferleistung (Zeit zu Raum, Raum zu Zeit) im Urpsrung des Prozesses steht? -> Was passiert, wenn das Resultat einer Arbeit abhängig von Vorstellung der Implikationen der Vorarbeit ist? (anderes Beispiel: Creative Coding)
+4. Können Zeitskulpturen eine plastische Fortführung des Impressionismus sein?
+    - _Falls nein:_ Wo ordnen sie sich ein zwischen Expressionismus und Konstruktivismus?
 
 
 ### Other art forms shaping the understanding of time
