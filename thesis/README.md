@@ -1,3 +1,69 @@
+# _Notes 25/10/13_
+
+# Research question, hypotheses, methdology
+
+## 1. Process Focus
+
+### Research Question
+
+1. How do artists navigate the tension between sequential, narrative goals for the 2D animation and spatial goals for the 3D sculpture when creating T1MESCULPTURES?
+
+2. What specific strategies or workflows, if any, do artists develop to integrate temporal meaning into a static physical form?
+
+3. Which creative decisions are prioritized when the aesthetic aims of the animation and the resulting sculpture conflict?
+
+4. How does engaging with this time-to-space translation process affect the artists' subjective experience of creative flow and time perception?
+
+### Hypothesis
+
+`1. When creating a single spatial object (3D sculpture) by translating a temporal sequence (2D animation), creative approaches combine and artists use neither solely a narrative-based sequential approach (focussing on the 2D animation) nor solely a form-based physical approach (focussing on the 3D sculpture), but combines both to further charge the object with meaning.`
+
+`2. By making the passage of time tangible and mallable, the process of creating a T1MESCULPTURE, leads to a state of resynchronization for the artists.` _(-> Hartmut Rosa)_
+
+### Methodology
+
+Qualitative User Study
+- 3-5 participants with backgrounds in animation, design, or sculpture
+- making T1MESCULPTURES for ~3 weeks
+- (creative) diary during the process
+- interview afterward
+
+## 2. Contextualisation Focus
+
+### Research Question
+
+1. How does the procedural method of T1MESCULPTURES differ from the Modernist representation of motion in works by artists like Duchamp or Boccioni?
+
+2. What is the closest art historical contextual frame for T1MESCULPTURES and how do the statues differ from possible predecessors?
+
+2.a. How does the concept of [indexicality](https://en.wikipedia.org/wiki/Indexicality) apply to a T1MESCULPTURE, where the form is a direct trace of digital data?
+
+3. What are the dominant aesthetic interpretations of a T1MESCULPTURE when it is presented to viewers without its generative context?
+
+### Hypothesis
+
+`1. T1MESCULPTURES move beyond the Modernist idea of representing motion in their artistic treatment of time, creating a new category of radical realism as their form is purely derived from their literal, underlying temporal layer and not from an abstraction to convey the sensation of time.`
+
+
+`2. When viewed in isolation, T1MESCULPTURES look purely abstract. The source animation reveals their tempopral embedding, the full meaning is therefore not inherent in the form, but unlocked through contextual knowledge.` _(a T1MESCULPTURE itself needs time to present itself fully?)_
+
+### Methodology
+
+1. Comparative Analysis
+- Visual and technical comparison of T1MESCULPTURES against key precedents
+  - Modernism
+  - Chronophotography
+- Theoretical framework to define T1MESCULPTURES from semiotics, to philosophy and new media
+
+2. Reception Study
+
+- Two-stage viewer study
+- 1st asked to interpret and react to sculptures in isolation
+- Then shown the source animations and asked how this new information changes their perception
+
+
+# _Notes 25/10/06_
+
 # Table of Contents
 
 ## Part I – Practical Exploration: T1MESCULPTURES
