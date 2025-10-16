@@ -42,6 +42,8 @@ All approaches are tested with the following animation as it covers all edge cas
 
 ![test animation](./img/testanimation_01.gif)
 
+### Read more about the current implementation: [algorithm/README.md](./algorithm/README.md)
+
 ### _Sizing of dimensions._
 
 While the X and Y dimensions of the resulting sculpture from a video have a given ratio, the Z axis derived from the frames does not have a relative height to the size of the frames.
