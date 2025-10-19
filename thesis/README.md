@@ -1,3 +1,115 @@
+# _Notes 25/10/19_
+
+## Research Question
+
+1. What is the art historical position of T1MESCULPTURES concerning the representation of time and motion, particularly in relation to Modernist predecessors and other relevant artistic/procedural frameworks?
+2. What is the relationship between artists' sequential, narrative goals (2D animation) and their spatial goals (3D sculpture) during the creative process for T1MESCULPTURES?
+3. How do artists describe their experiences of creative flow and time perception while engaging in the time-to-space translation process?
+
+## Hypothesss
+
+1. T1MESCULPTURES carve out a unique art historical position by shifting the problem of representing motion from one of subjective abstraction to one of objective, procedural translation, placing them in a new context at the intersection of sculpture, digital media, and data physicalization.
+2. Artists creating T1MESCULPTURES experience a significant conflict between their sequential, narrative goals and their spatial goals.
+3. Engaging in the time-to-space translation process is associated with an altered subjective experience of time perception.
+
+## Methodology
+
+**For 1:** Comparative Analysis
+- Visual and technical comparison of T1MESCULPTURES against key precedents
+  - Modernism
+  - Chronophotography
+- Theoretical framework to define T1MESCULPTURES from semiotics, to philosophy and new media
+
+**For 2 & 3:** Qualitative User Study
+- 3-5 participants with backgrounds in animation, design, or sculpture
+- making T1MESCULPTURES for ~3 weeks
+- (creative) diary during the process
+- interview afterward
+
+
+## Table of Contents
+
+1. Introduction (5-7 pages)
+2. Art Historical Context: Representing Time and Motion (10-12 pages)
+3. T1MESCULPTURE as Process and Object (10-12 pages)
+4. Methodology (8-10 pages)
+5. Analysis 1: The Art Historical Position of T1MESCULPTURES (10-12 pages)
+6. Analysis 2: The Artist's Creative Experience (15-20 pages)
+7. Discussion (5-8 pages)
+8. Conclusion (3-5 pages)
+
+66 - 86 pages
+
+#### 1. Introduction
+
+- Motivation (& Problem Statement?)
+- Defining T1MESCULPTURES (surface level, broad)
+- Research Questions & Hypotheses
+- Structure of the Thesis
+
+### Part I – Context and Methodology
+
+#### 2. Art Historical Context: Representing Time and Motion
+_Literature for RQ1_
+
+- Time and space as artistic categories
+  - Chronophotography to Modernist Abstraction (Duchamp, Boccioni, ...)
+  - Contemporary and Procedural Approaches (Kinetic art, digital art, ...)
+
+#### 3. T1MESCULPTURE as Process and Object
+_Discussion of concept for RQ1 and RQ2_
+
+- Conceptual Foundations
+  - From movement to form: freezing time / Translating time to space
+- Technical Implementation
+  - Algorithmic approaches
+    - (Input material: animation frames)
+  - Data processing: Python & Blender
+    - (Preparation and mesh optimization)
+    - (Scaling and dimensioning)
+  - Concept and design of the interface
+  - 3D printing process
+- Practice-led Reflections
+  - Examples of produced sculptures
+  - Own initial insights on the narrative (2D) vs. spatial (3D) relationship
+    - Aesthetic considerations
+    - Constraints and possibilities
+    - First insights
+
+#### 4. Methodology
+
+- Part 1: Comparative Analysis (for RQ1)
+- Part 2: Qualitative User Study (for RQs 2 & 3)
+
+### Part II – Results and Discussion
+
+#### 5. Analysis 1: The Art Historical Position of T1MESCULPTURES
+
+- Comparative Analysis
+- Argument for T1MESCULPTURES as objective translation vs. subjective abstraction
+
+#### 6. Analysis 2: The Artist's Creative Experience
+
+- Results Qualitative User Study
+  - Findings on RQ2 (Narrative vs. Spatial)
+  - Findings on RQ3 (Flow & Time)
+- Presentation of participant artworks
+
+#### 7. Discussion
+
+- Synthesization of Chapter 5 and Chapter 6
+  - Differences of medium and their relation to feeling / results of study
+  - Transfer between temporal and spatial imagination
+  - Interdisciplinary insights
+- Limitations of the study
+
+#### 8. Conclusion
+
+- Summary of findings
+  - Revisiting hypotheses
+- Open questions
+- Future directions
+
 # _Notes 25/10/13_
 
 # Research question, hypotheses, methdology
