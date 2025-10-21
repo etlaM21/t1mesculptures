@@ -70,7 +70,7 @@ print(f"Downsampling images to ({scaled_width}, {scaled_height}).")
 
 # Create the initial, unscaled pointcloud
 pointcloud = np.zeros((totalFrames, scaled_height, scaled_width))
-for i, frame in enumerate(frames):
+for i, frame in enumerate(frames): 
     resized_mask = cv.resize(frame.mask, (scaled_width, scaled_height), interpolation=cv.INTER_NEAREST)
     pointcloud[i, :, :] = resized_mask / 255.0
 
