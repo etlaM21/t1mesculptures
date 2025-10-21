@@ -1,6 +1,8 @@
 import time
-import pyvista as pv
+import os
+import tempfile
 import numpy as np
+import pyvista as pv
 
 # Import our new modules
 import data_loader
@@ -41,14 +43,22 @@ def main():
     
     total_start_time = time.time()
     
-    # 1. Get all parameters from the user
+    # --- Create unique temporary directory for session ---
+    temp_dir = tempfile.mkdtemp(prefix="t1mesculptures_")
+    print(f"Caching intermediate files in: {temp_dir}")
+    #  Define cache file paths
+    volume_cache_path = os.path.join(temp_dir, "smoothed_volume.npy")
+    mesh_cache_path = os.path.join(temp_dir, "raw_mesh.ply")
+    
+    # --- Get all parameters from the user ---
     try:
         params = get_user_params()
     except ValueError as e:
         print(f"Invalid input: {e}. Please try again.")
         return
 
-    # --- 2. DATA LOADING ---
+    # --- DATA LOADING ---
+    # Fast, no cache needed
     print("\n" + "="*30)
     print("STAGE 1: LOADING DATA")
     print("="*30)
@@ -66,7 +76,7 @@ def main():
         
     print(f"--- Stage 1 finished in {time.time() - stage_time:.2f} seconds ---")
 
-    # --- 3. VOLUME PROCESSING ---
+    # --- VOLUME PROCESSING ---
     print("\n" + "="*30)
     print("STAGE 2: PROCESSING VOLUME")
     print("="*30)
@@ -83,32 +93,75 @@ def main():
         scaled_height, 
         scaled_width
     )
+
+    smoothed_volume = None
     
-    rescaled_volume = volume_processor.scale_volume(
-        pointcloud, 
-        totalFrames, 
-        params['fps'], 
-        scaled_height, 
-        scaled_width
-    )
+    # rescaled_volume = volume_processor.scale_volume(
+    #     pointcloud, 
+    #     totalFrames, 
+    #     params['fps'], 
+    #     scaled_height, 
+    #     scaled_width
+    # )
     
-    smoothed_volume = volume_processor.smooth_volume(
-        rescaled_volume, 
-        params['smooth_method'], 
-        **params['smooth_kwargs']
-    )
-    
+    # smoothed_volume = volume_processor.smooth_volume(
+    #     rescaled_volume, 
+    #     params['smooth_method'], 
+    #     **params['smooth_kwargs']
+    # )
+
+    # Caching the Volume
+    if os.path.exists(volume_cache_path):
+        print("Loading cached volume from disk...")
+        smoothed_volume = np.load(volume_cache_path)
+    else:
+        print("No cache found. Running volume processing...")
+        rescaled_volume = volume_processor.scale_volume(
+            pointcloud, 
+            totalFrames, 
+            params['fps'], 
+            scaled_height, 
+            scaled_width
+        )
+        smoothed_volume = volume_processor.smooth_volume(
+            rescaled_volume, 
+            params['smooth_method'], 
+            **params['smooth_kwargs']
+        )
+        
+        np.save(volume_cache_path, smoothed_volume)
+        print(f"Saved volume to cache: {volume_cache_path}")
     print(f"--- Stage 2 finished in {time.time() - stage_time:.2f} seconds ---")
 
-    # --- 4. MESH EXTRACTION ---
+    # --- MESH EXTRACTION ---
     print("\n" + "="*30)
     print("STAGE 3: EXTRACTING MESH")
     print("="*30)
     stage_time = time.time()
     
-    vertices, faces = mesh_processor.extract_mesh(smoothed_volume)
+    original_surface = None
+    vertices = None
+    faces = None    
+    # Caching the Mesh
+    if os.path.exists(mesh_cache_path):
+        print("Loading cached raw mesh from disk...")
+        # We don't need vertices/faces, just the PyVista object
+        original_surface = pv.read(mesh_cache_path)
+        # We need to get the vertices/faces back if optimize_mesh needs them
+        # (This logic can be cleaned up, but it's the main idea)
+        vertices = original_surface.points
+        faces = original_surface.faces.reshape(-1, 4)[:, 1:] 
+    else:
+        print("No cache found. Running mesh extraction...")
+        vertices, faces = mesh_processor.extract_mesh(smoothed_volume)
+        
+        # Save the result to our cache!
+        original_surface = pv.PolyData(vertices.astype(np.float32), np.hstack((np.full((faces.shape[0], 1), 3), faces)))
+        original_surface.save(mesh_cache_path)
+        print(f"Saved raw mesh to cache: {mesh_cache_path}")
+    # vertices, faces = mesh_processor.extract_mesh(smoothed_volume)
     
-    # Save the original, un-decimated mesh (optional, but good for debugging)
+    # Save the original, un-decimated mesh
     try:
         print("Saving original (un-decimated) mesh...")
         original_surface = pv.PolyData(vertices.astype(np.float32), np.hstack((np.full((faces.shape[0], 1), 3), faces)))
@@ -119,7 +172,7 @@ def main():
         
     print(f"--- Stage 3 finished in {time.time() - stage_time:.2f} seconds ---")
 
-    # --- 5. INTERACTIVE OPTIMIZATION ---
+    # --- INTERACTIVE OPTIMIZATION ---
     print("\n" + "="*30)
     print("STAGE 4: OPTIMIZING MESH")
     print("="*30)
