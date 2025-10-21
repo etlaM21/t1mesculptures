@@ -42,9 +42,11 @@ class T1mesculpturesApp(tk.Tk):
         
         # --- App State ---
         self.frames_list = [] # Holds the loaded image frames for the video
-        self.raw_mesh_cache_path = None # Path to the un-decimated mesh
         self.is_video_playing = False
         self.elapsed_at_pause = 0.0 # Tracks time for pause/resume -> Used for TIME-BASED animation playback instead of frame-based
+
+        self.raw_mesh_cache_path = None
+        self.final_mesh_result = None
 
         # --- Parameter Storage ---
         # Tkinter variables to auto-update widgets
@@ -488,33 +490,66 @@ class T1mesculpturesApp(tk.Tk):
                     print(f"Saved volume to cache: {volume_cache_path}")
                 else:
                     raise ValueError("Volume processing failed.")
-            
+                
+            vertices = None
+            faces = None
+            raw_surface = None
             # --- STAGE 3: MESH (Cached) ---
             if os.path.exists(self.raw_mesh_cache_path):
                 print("Loading cached raw mesh from disk...")
-                raw_surface = pv.read(self.raw_mesh_cache_path)
-            else:
-                print("No mesh cache found. Running mesh extraction...")
+                try:
+                    raw_surface = pv.read(self.raw_mesh_cache_path)
+                    vertices = raw_surface.points
+                    faces = raw_surface.faces.reshape(-1, 4)[:, 1:]
+                    print("Cache loaded successfully.")
+                except Exception as e:
+                    print(f"Failed to read mesh cache: {e}. Re-generating...")
+                    # Ensure variables are None if cache read fails
+                    vertices = None
+                    faces = None
+                    raw_surface = None
+           # If cache didn't exist or failed to load, generate the mesh
+            if vertices is None: # Check if vertices is still None
+                print("No mesh cache found or cache failed. Running mesh extraction...")
+                # extract_mesh now returns repaired data if needed
                 vertices, faces = mesh_processor.extract_mesh(smoothed_volume)
-                if vertices is None:
+                
+                if vertices is not None and faces is not None:
+                    # Save the raw, potentially repaired mesh to cache
+                    raw_surface = pv.PolyData(vertices.astype(np.float32), np.hstack((np.full((faces.shape[0], 1), 3), faces)))
+                    raw_surface.save(self.raw_mesh_cache_path)
+                    print(f"Saved raw mesh to cache.")
+                else:
+                    # Mesh extraction failed
                     raise ValueError("Mesh extraction failed.")
+
+            if vertices is None or faces is None:
+                 raise ValueError("Could not load or generate mesh data.")
                 
-                raw_surface = pv.PolyData(vertices.astype(np.float32), np.hstack((np.full((faces.shape[0], 1), 3), faces)))
-                raw_surface.save(self.raw_mesh_cache_path)
-                print(f"Saved raw mesh to cache: {self.raw_mesh_cache_path}")
-                
+             # ---  STAGE 4: OPTIMIZATION ---
+            print("Running final optimization...")
+            # Use the decimation value passed in the 'params' dictionary
+            reduction = params['decimation']
+            final_surface = mesh_processor.optimize_mesh(
+                vertices,
+                faces,
+                reduction
+            )
+            if final_surface is None:
+                raise ValueError("Mesh optimization failed.")
+
             print(f"--- Generation complete in {time.time() - total_start_time:.2f}s ---")
             
             # --- Schedule GUI update on the main thread ---
-            self.after(0, self._on_generation_complete, raw_surface)
-            
+            self.after(0, self._on_generation_complete, final_surface)
+
         except Exception as e:
             # --- Handle errors and schedule an error message ---
             print(f"--- ERROR IN WORKER THREAD ---")
             print(e)
             self.after(0, self._on_generation_failed, str(e))
 
-    def _on_generation_complete(self, raw_surface):
+    def _on_generation_complete(self, final_mesh_result):
         """
         GUI UPDATE - This runs on the main thread.
         Called by the worker when processing is done.
@@ -523,10 +558,13 @@ class T1mesculpturesApp(tk.Tk):
         self.generate_button.config(state="normal", text="GENERATE MESH")
         self.preview_button.config(state="normal")
         self.save_button.config(state="normal")
+
+        # --- Store the final result ---
+        self.final_mesh_result = final_mesh_result
         
-        # Update stats for the RAW (un-decimated) mesh
-        self.vertices_label.config(text=f"Vertices: {raw_surface.n_points}")
-        self.faces_label.config(text=f"Faces: {raw_surface.n_cells}")
+        # Update stats based on the FINAL optimized mesh
+        self.vertices_label.config(text=f"Vertices: {final_mesh_result.n_points}")
+        self.faces_label.config(text=f"Faces: {final_mesh_result.n_cells}")
 
     def _on_generation_failed(self, error_message):
         """
@@ -538,37 +576,12 @@ class T1mesculpturesApp(tk.Tk):
 
     def get_optimized_mesh(self):
         """
-        Helper function to load the raw mesh and run optimization.
+        Helper function to retrieve the mesh generated by the background thread.
         """
-        if not self.raw_mesh_cache_path or not os.path.exists(self.raw_mesh_cache_path):
-            messagebox.showerror("Error", "No raw mesh found. Please run 'GENERATE MESH' first.")
-            return None
-            
-        try:
-            # Load the raw (un-decimated) mesh
-            raw_surface = pv.read(self.raw_mesh_cache_path)
-            vertices = raw_surface.points
-            faces = raw_surface.faces.reshape(-1, 4)[:, 1:]
-            
-            # Get the *current* decimation value from the slider
-            reduction = self.vars["decimation"].get()
-            
-            # Run the optimization
-            final_surface = mesh_processor.optimize_mesh(
-                vertices,
-                faces,
-                reduction
-            )
-            
-            # Update the stats to reflect the NEW decimated mesh
-            self.vertices_label.config(text=f"Vertices: {final_surface.n_points}")
-            self.faces_label.config(text=f"Faces: {final_surface.n_cells}")
-            
-            return final_surface
-            
-        except Exception as e:
-            print(f"Error during optimization: {e}")
-            messagebox.showerror("Optimization Error", f"Could not optimize mesh: {e}")
+        if hasattr(self, 'final_mesh_result') and self.final_mesh_result is not None:
+            return self.final_mesh_result
+        else:
+            messagebox.showerror("Error", "No mesh result found. Please run 'GENERATE MESH' first.")
             return None
 
     def show_3d_preview(self):
