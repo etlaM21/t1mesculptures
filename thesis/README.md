@@ -1,10 +1,10 @@
-# _Notes 25/10/19_
+# _Notes 25/10/19_ -> Updated _25/10/22_
 
 ## Research Question
 
 1. What is the art historical position of T1MESCULPTURES concerning the representation of time and motion, particularly in relation to Modernist predecessors and other relevant artistic/procedural frameworks?
 2. What is the relationship between artists' sequential, narrative goals (2D animation) and their spatial goals (3D sculpture) during the creative process for T1MESCULPTURES?
-3. How do artists describe their experiences of flow and time perception while engaging in the time-to-space translation process?
+3. How do artists describe their experiences time perception while engaging in the time-to-space translation process?
 
 ## Hypothesss
 
@@ -32,8 +32,8 @@
 
 1. Introduction (5-7 pages)
 2. Art Historical Context: Representing Time and Motion (10-12 pages)
-3. T1MESCULPTURE as Process and Object (10-12 pages)
-4. Methodology (8-10 pages)
+3. Artistic Practice Context: Working in Time and Motion (8-10 pages)
+4. T1MESCULPTURE as Process and Object (10-12 pages)
 5. Analysis 1: The Art Historical Position of T1MESCULPTURES (10-12 pages)
 6. Analysis 2: The Artist's Creative Experience (15-20 pages)
 7. Discussion (5-8 pages)
@@ -46,10 +46,15 @@
 - Motivation (& Problem Statement?)
 - Defining T1MESCULPTURES (surface level, broad)
 - Research Questions & Hypotheses
+- Methodology
+  - Part 1: Comparative Analysis (for RQ1)
+  - Part 2: Qualitative User Study (for RQs 2 & 3)
 - Structure of the Thesis
 
 _Ressources:_
 - Wayne C. Booth, The Craft of Research
+- Mieke Bal, Looking In: The Art of Viewing (how to compare artworks)
+- Virginia Braun & Victoria Clarke, Using thematic analysis in psychology (how to do qualitative studies)
 
 ### Part I – Context and Methodology
 
@@ -68,7 +73,18 @@ _Ressources:_
 - Linda Dalrymple Henderson, The Fourth Dimension and Non-Euclidean Geometry in Modern Art (Modernism / Duchamp)
 - F. T. Marinetti, The Futurist Manifesto (Futurism / Boccioni)
 
-#### 3. T1MESCULPTURE as Process and Object
+#### 3. Practical Context: Working in Time and Motion
+
+- Living in time
+  - subjective time perception
+
+_Ressources:_
+- Mihaly Csikszentmihalyi, Flow: The Psychology of Optimal Experience (flow theory)
+- Mihaly Csikszentmihalyi, Creativity: Flow and the Psychology of Discovery and Invention ("creative" flow)
+- Hartmut Rosa, Beschleunigung. Die Veränderung der Zeitstrukturen in der Moderne (time perception)
+- Marc Wittmann, Felt Time: The Psychology of How We Perceive Time (time perception)
+
+#### 4. T1MESCULPTURE as Process and Object
 _Discussion of concept for RQ1 and RQ2_
 
 - Conceptual Foundations
@@ -93,22 +109,6 @@ _Ressources:_
 - Philip Galanter, What is Generative Art? The Computer, Art, and Causal Systems
 - Lev Manovich, The Language of New Media (semiotics)
 - Gilles Deleuze, Cinema 1: The Movement Image (semiotics)
-
-#### 4. Methodology
-
-- Part 1: Comparative Analysis (for RQ1)
-
-_Ressources:_
-- Mieke Bal, Looking In: The Art of Viewing (how to compare artworks)
-
-- Part 2: Qualitative User Study (for RQs 2 & 3)
-
-_Ressources:_
-- Virginia Braun & Victoria Clarke, Using thematic analysis in psychology (how to do qualitative studies)
-- Mihaly Csikszentmihalyi, Flow: The Psychology of Optimal Experience (flow theory)
-- Mihaly Csikszentmihalyi, Creativity: Flow and the Psychology of Discovery and Invention ("creative" flow)
-- Hartmut Rosa, Beschleunigung. Die Veränderung der Zeitstrukturen in der Moderne (time perception)
-- Marc Wittmann, Felt Time: The Psychology of How We Perceive Time (time perception)
 
 ### Part II – Results and Discussion
 
