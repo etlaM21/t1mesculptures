@@ -109,7 +109,7 @@ class T1mesculpturesApp(tk.Tk):
         data_frame.grid(row=1, column=0, sticky="nsew", pady=5)
         data_frame.columnconfigure(1, weight=1)
         
-        self.create_slider(data_frame, "Threshold:", self.vars["threshold"], 0, 255, 0)
+        self.create_slider(data_frame, "Threshold:", self.vars["threshold"], 0, 255, 0, slider_id="threshold")
         self.create_slider(data_frame, "FPS:", self.vars["fps"], 1, 120, 1)
         self.create_slider(data_frame, "Scale Factor:", self.vars["scale_factor"], 0.1, 1.0, 2)
 
@@ -173,7 +173,17 @@ class T1mesculpturesApp(tk.Tk):
         self.play_button.grid(row=1, column=0, sticky="n", padx=5, pady=5)
         self.pause_button = ttk.Button(self.video_tab, text="Pause", state="disabled", command=self.pause_video)
         self.pause_button.grid(row=1, column=1, sticky="n", padx=5, pady=5)
-        
+
+        # Treshhold Preview Tab
+        self.threshold_tab = ttk.Frame(self.notebook, padding=10)
+        self.notebook.add(self.threshold_tab, text="Threshold Preview")
+        self.threshold_tab.rowconfigure(0, weight=1)
+        self.threshold_tab.columnconfigure(0, weight=1)
+        self.threshold_preview_label = ttk.Label(self.threshold_tab, text="Load images to see threshold preview.", anchor="center")
+        self.threshold_preview_label.grid(row=0, column=0, sticky="nsew")
+
+        self.threshold_preview_label.bind("<Configure>", self.on_threshold_resize)
+
         # 3D Preview Tab
         self.preview_tab = ttk.Frame(self.notebook, padding=10)
         self.notebook.add(self.preview_tab, text="3D Preview")
@@ -217,18 +227,17 @@ class T1mesculpturesApp(tk.Tk):
 
     # --- Helper Functions ---
     
-    def create_slider(self, parent, text, variable, from_, to, row):
+    def create_slider(self, parent, text, variable, from_, to, row, slider_id=None):
         """Helper to create a label, slider, and value display."""
         
-        # 1. Create the Label (no change)
+        # 1. Create the Label
         ttk.Label(parent, text=text).grid(row=row, column=0, sticky="w", padx=5, pady=2)
         
-        # 2. Create the Slider (no change)
+        # 2. Create the Slider
         slider = ttk.Scale(parent, from_=from_, to=to, variable=variable)
         slider.grid(row=row, column=1, sticky="ew", padx=5)
         
-        # 3. Create the Editable Entry Box (replaces Label)
-        # We give it a fixed width to keep the layout clean
+        # 3. Create the Editable Entry Box
         value_entry = ttk.Entry(parent, width=7)
         value_entry.grid(row=row, column=2, sticky="e", padx=5)
 
@@ -277,9 +286,17 @@ class T1mesculpturesApp(tk.Tk):
                 sync_entry_from_slider(str(variable.get()))
         
         # --- Link everything together ---
-        
-        # Link slider movement to update the entry box
-        slider.configure(command=sync_entry_from_slider)
+
+        def slider_command_handler(value_str):
+            # First, sync the entry box using the existing function
+            sync_entry_from_slider(value_str)
+            
+            # If this is the threshold slider, ALSO update the preview
+            if slider_id == "threshold":
+                self.update_threshold_preview()
+
+        # Assign the combined command handler to the slider
+        slider.configure(command=slider_command_handler)
         
         # Link the "Enter" key and "clicking away" to update the slider
         value_entry.bind("<Return>", sync_variable_from_entry)
@@ -312,6 +329,7 @@ class T1mesculpturesApp(tk.Tk):
                 
             self.frames_label.configure(text=f"Frames: {len(self.frames_list)}")
             self.show_video_frame(0) # Show the first frame
+            self.update_threshold_preview()
             self.play_button.config(state="normal")
             self.pause_button.config(state="disabled")
             print("Video preview loaded.")
@@ -388,6 +406,15 @@ class T1mesculpturesApp(tk.Tk):
         # 4. Show that frame (only if it's not the one we're already on)
         if target_frame_index != self.current_frame_index:
             self.show_video_frame(target_frame_index)
+        # Check if Threshold Tab is active and update it
+        try:
+            selected_tab_index = self.notebook.index(self.notebook.select())
+            if selected_tab_index == 1: # 0=Video, 1=Threshold, 2=3D
+                # If the tab is selected, always call the update function.
+                # It will use the self.current_frame_index set by show_video_frame.
+                self.update_threshold_preview()
+        except tk.TclError:
+             pass # Notebook might not be ready yet
         
         # 5. Schedule the next check (e.g., every 10ms)
         self.after(10, self.video_loop)
@@ -399,6 +426,83 @@ class T1mesculpturesApp(tk.Tk):
 
         # Store the time that just passed
         self.elapsed_at_pause += (time.time() - self.animation_start_time)
+
+    # --- Threshhold Preview ---
+
+    def _generate_threshold_photo(self, frame_obj, threshold_value):
+        """Generates a resized PhotoImage of the threshold mask."""
+        if frame_obj is None:
+            return None
+
+        # 1. Apply threshold
+        _, mask_image = cv.threshold(frame_obj.imagegray, threshold_value, 255, cv.THRESH_BINARY)
+
+        # 2. Convert to PIL Image (for PhotoImage)
+        mask_rgb = cv.cvtColor(mask_image, cv.COLOR_GRAY2RGB)
+        pil_image = Image.fromarray(mask_rgb)
+
+        # 3. Calculate target size based on the threshold label's current size
+        container_w = self.threshold_preview_label.winfo_width()
+        container_h = self.threshold_preview_label.winfo_height()
+
+        if container_w < 2 or container_h < 2:
+             # Use a default reasonable size if the label isn't drawn yet
+             container_w, container_h = 400, 300 
+
+        img_w, img_h = pil_image.size
+        scale = min(container_w / img_w, container_h / img_h)
+        new_w = int(img_w * scale)
+        new_h = int(img_h * scale)
+
+        # Prevent zero size errors
+        if new_w < 1: new_w = 1
+        if new_h < 1: new_h = 1
+
+        # 4. Resize
+        resized_pil_image = pil_image.resize((new_w, new_h), Image.Resampling.BILINEAR) # Use fast BILINEAR
+
+        # 5. Convert to PhotoImage
+        return ImageTk.PhotoImage(resized_pil_image)
+
+    def update_threshold_preview(self, *args):
+        """Applies threshold and updates the preview label."""
+        try:
+            selected_tab_index = self.notebook.index(self.notebook.select())
+            # Only update if frames exist AND the threshold tab is visible
+            if not self.frames_list or selected_tab_index != 1:
+                return
+        except tk.TclError: # Happens if notebook not fully drawn yet
+             return
+
+        # Get current frame object and threshold value
+        # Use try-except in case current_frame_index is somehow invalid
+        try:
+             # Make sure current_frame_index is valid
+             if not hasattr(self, 'current_frame_index') or self.current_frame_index >= len(self.frames_list):
+                  self.current_frame_index = 0 # Default to first frame if needed
+             frame_obj = self.frames_list[self.current_frame_index]
+        except (IndexError, AttributeError):
+             return # No valid frame selected or frames_list empty
+             
+        threshold_value = self.vars["threshold"].get()
+
+        # Generate the PhotoImage using the new helper
+        new_photo = self._generate_threshold_photo(frame_obj, threshold_value)
+
+        if new_photo:
+            # --- IMPORTANT: Keep a reference! ---
+            # Assign to self.threshold_photo BEFORE configuring the label
+            self.threshold_photo = new_photo
+            self.threshold_preview_label.config(image=self.threshold_photo, text="")
+        else:
+            self.threshold_preview_label.config(image="", text="Error generating preview.") # Clear image on error
+
+    def on_threshold_resize(self, event):
+        """Called when the threshold preview label is resized."""
+        # We add a small delay (like for video) to avoid excessive updates
+        if hasattr(self, "_threshold_resize_job"):
+             self.after_cancel(self._threshold_resize_job)
+        self._threshold_resize_job = self.after(10, self.update_threshold_preview)
 
     # --- UI Functions ---
             
@@ -414,6 +518,13 @@ class T1mesculpturesApp(tk.Tk):
         else: # 'none'
             self.sigma_frame.grid_remove()
             self.iters_frame.grid_remove()
+
+    def on_tab_changed(self, event):
+        """Called when the user switches notebook tabs."""
+        selected_tab_index = self.notebook.index(self.notebook.select())
+        # Check if the newly selected tab is the Threshold Preview (index 1)
+        if selected_tab_index == 1: # 0=Video, 1=Threshold, 2=3D
+            self.update_threshold_preview()
 
     # --- Main Processing Logic ---
     
