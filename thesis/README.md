@@ -37,9 +37,7 @@
 5. Analysis 1: The Art Historical Position of T1MESCULPTURES (10-12 pages)
 6. Analysis 2: The Artist's Creative Experience (15-20 pages)
 7. Discussion (5-8 pages)
-8. Conclusion (3-5 pages)
-
-66 - 86 pages
+8. Conclusion (1-2 pages)
 
 #### 1. Introduction
 
