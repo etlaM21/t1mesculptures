@@ -41,8 +41,8 @@ def fill_pointcloud(pointcloud, frames, scaled_height, scaled_width):
     # Add 1 layer of padding with value 0 (representing 'outside')
     # around all three axes (time, height, width).
     # So marching cubes properly encloses the mesh
-    print("Adding 1-voxel padding around the volume...")
-    padded_pointcloud = np.pad(pointcloud, pad_width=1, mode='constant', constant_values=0)
+    print("Adding 2-voxel padding around the volume...")
+    padded_pointcloud = np.pad(pointcloud, pad_width=2, mode='constant', constant_values=0)
 
     return padded_pointcloud
 
