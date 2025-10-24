@@ -38,7 +38,13 @@ def fill_pointcloud(pointcloud, frames, scaled_height, scaled_width):
         resized_mask = cv.resize(frame.mask, (scaled_width, scaled_height), interpolation=cv.INTER_NEAREST)
         pointcloud[i, :, :] = resized_mask / 255.0
 
-    return pointcloud
+    # Add 1 layer of padding with value 0 (representing 'outside')
+    # around all three axes (time, height, width).
+    # So marching cubes properly encloses the mesh
+    print("Adding 1-voxel padding around the volume...")
+    padded_pointcloud = np.pad(pointcloud, pad_width=1, mode='constant', constant_values=0)
+
+    return padded_pointcloud
 
 
 def scale_volume(pointcloud, totalFrames, fps, scaled_height, scaled_width):
