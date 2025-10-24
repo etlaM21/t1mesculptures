@@ -145,9 +145,15 @@ class T1mesculpturesApp(tk.Tk):
         
         self.generate_button = ttk.Button(action_frame, text="GENERATE MESH", command=self.start_generation_thread, style="Accent.TButton")
         self.generate_button.grid(row=0, column=0, sticky="ew", pady=5, ipady=10)
+
+        self.manifold_status_label = ttk.Label(action_frame, text="", anchor="center")
+        self.manifold_status_label.grid(row=1, column=0, sticky="ew", pady=(5,0))
+
+        self.repair_button = ttk.Button(action_frame, text="Repair Non-Manifold Mesh", state="disabled", command=self.repair_mesh_command)
+        self.repair_button.grid(row=2, column=0, sticky="ew",  pady=5, ipady=10)
         
         self.save_button = ttk.Button(action_frame, text="Save Final Mesh", state="disabled", command=self.save_final_mesh)
-        self.save_button.grid(row=1, column=0, sticky="ew", pady=5)
+        self.save_button.grid(row=3, column=0, sticky="ew", pady=5)
         
     def create_output_widgets(self):
         """Populates the right-hand output panel."""
@@ -641,7 +647,7 @@ class T1mesculpturesApp(tk.Tk):
             print("Running final optimization...")
             # Use the decimation value passed in the 'params' dictionary
             reduction = params['decimation']
-            final_surface = mesh_processor.optimize_mesh(
+            final_surface, is_manifold_status = mesh_processor.optimize_mesh(
                 vertices,
                 faces,
                 reduction
@@ -652,7 +658,7 @@ class T1mesculpturesApp(tk.Tk):
             print(f"--- Generation complete in {time.time() - total_start_time:.2f}s ---")
             
             # --- Schedule GUI update on the main thread ---
-            self.after(0, self._on_generation_complete, final_surface)
+            self.after(0, self._on_generation_complete, final_surface, is_manifold_status)
 
         except Exception as e:
             # --- Handle errors and schedule an error message ---
@@ -660,7 +666,7 @@ class T1mesculpturesApp(tk.Tk):
             print(e)
             self.after(0, self._on_generation_failed, str(e))
 
-    def _on_generation_complete(self, final_mesh_result):
+    def _on_generation_complete(self, final_mesh_result, is_manifold):
         """
         GUI UPDATE - This runs on the main thread.
         Called by the worker when processing is done.
@@ -673,9 +679,51 @@ class T1mesculpturesApp(tk.Tk):
         # --- Store the final result ---
         self.final_mesh_result = final_mesh_result
         
-        # Update stats based on the FINAL optimized mesh
+        # Update stats based on the mesh
         self.vertices_label.config(text=f"Vertices: {final_mesh_result.n_points}")
         self.faces_label.config(text=f"Faces: {final_mesh_result.n_cells}")
+
+        if is_manifold:
+            self.manifold_status_label.config(text="Mesh is MANIFOLD and ready to be printed ✅", foreground="green")
+            self.repair_button.config(state="disabled")
+        else:
+            self.manifold_status_label.config(text="Mesh is NOT MANIFOLD and can NOT be 3D printed ❌", foreground="red")
+            self.repair_button.config(state="normal")
+
+    def repair_mesh_command(self):
+        """Called when the 'Repair Mesh' button is pressed."""
+        if self.final_mesh_result is None:
+            messagebox.showerror("Error", "No mesh available to repair.")
+            return
+
+        print("--- Starting Mesh Repair ---")
+        self.repair_button.config(state="disabled", text="REPAIRING...") # Disable during repair
+
+        # Call the repair function from mesh_processor
+        repaired_mesh = mesh_processor.repair_and_check_mesh(self.final_mesh_result)
+
+        if repaired_mesh:
+            # Store the NEW repaired mesh
+            self.final_mesh_result = repaired_mesh
+
+            # Update UI elements
+            self.vertices_label.config(text=f"Vertices: {repaired_mesh.n_points}")
+            self.faces_label.config(text=f"Faces: {repaired_mesh.n_cells}")
+            if repaired_mesh.is_manifold:
+                self.manifold_status_label.config(text="Mesh REPAIRED ✅", foreground="green")
+                # Keep repair button disabled - it's done
+                self.repair_button.config(text="Repair Non-Manifold Mesh")
+            else:
+                self.manifold_status_label.config(text="Repair FAILED ❌", foreground="red")
+                # Re-enable if repair failed? Or leave disabled? Your choice.
+                # Let's re-enable for now
+                self.repair_button.config(state="normal", text="Retry Repair?")
+            print("--- Repair finished ---")
+
+        else:
+            messagebox.showerror("Repair Error", "Mesh repair function failed.")
+            self.manifold_status_label.config(text="Repair FAILED ❌", foreground="red")
+            self.repair_button.config(state="normal", text="Retry Repair?") # Re-enable on failure
 
     def _on_generation_failed(self, error_message):
         """

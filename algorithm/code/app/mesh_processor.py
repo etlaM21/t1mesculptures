@@ -30,11 +30,11 @@ def optimize_mesh(vertices, faces, reduction_factor):
     print(f"Final mesh has {final_surface.n_points} vertices and {final_surface.n_cells} faces.")
     print(f"Is the mesh manifold? {is_manifold}")
 
-    if not is_manifold:
-        print("WARNING: The resulting mesh is not manifold. Attempting repair with PyMeshFix...")
-        final_surface = repair_and_check_mesh(final_surface)
+    # if not is_manifold:
+    #     print("WARNING: The resulting mesh is not manifold. Attempting repair with PyMeshFix...")
+    #     final_surface = repair_and_check_mesh(final_surface)
 
-    return final_surface
+    return final_surface, is_manifold
             
 def repair_and_check_mesh(mesh):
     # Create a MeshFix object from the PyVista data
