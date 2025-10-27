@@ -38,7 +38,7 @@ class T1mesculpturesApp(tk.Tk):
 
         # --- Basic App Setup ---
         self.title("T1MESCULPTURES")
-        self.geometry("1100x750")
+        self.geometry("1100x775")
         
         # --- App State ---
         self.frames_list = [] # Holds the loaded image frames for the video
@@ -57,7 +57,7 @@ class T1mesculpturesApp(tk.Tk):
             "threshold": tk.IntVar(value=127),
             "fps": tk.IntVar(value=30),
             "scale_factor": tk.DoubleVar(value=0.5),
-            "smooth_method": tk.StringVar(value="constrained"),
+            "smooth_method": tk.StringVar(value="auto"),
             "smooth_sigma": tk.DoubleVar(value=1.5),
             "smooth_iters": tk.IntVar(value=50),
             "decimation": tk.DoubleVar(value=0.9),
@@ -120,8 +120,9 @@ class T1mesculpturesApp(tk.Tk):
 
         # Radio buttons
         ttk.Radiobutton(smooth_frame, text="None", variable=self.vars["smooth_method"], value="none", command=self.update_smoothing_controls).grid(row=0, column=0, sticky="w")
-        ttk.Radiobutton(smooth_frame, text="Gaussian", variable=self.vars["smooth_method"], value="gaussian", command=self.update_smoothing_controls).grid(row=1, column=0, sticky="w")
-        ttk.Radiobutton(smooth_frame, text="Constrained", variable=self.vars["smooth_method"], value="constrained", command=self.update_smoothing_controls).grid(row=2, column=0, sticky="w")
+        ttk.Radiobutton(smooth_frame, text="Auto", variable=self.vars["smooth_method"], value="auto", command=self.update_smoothing_controls).grid(row=1, column=0, sticky="w")
+        ttk.Radiobutton(smooth_frame, text="Gaussian", variable=self.vars["smooth_method"], value="gaussian", command=self.update_smoothing_controls).grid(row=2, column=0, sticky="w")
+        ttk.Radiobutton(smooth_frame, text="Constrained", variable=self.vars["smooth_method"], value="constrained", command=self.update_smoothing_controls).grid(row=3, column=0, sticky="w")
         
         # Dynamic Sliders (we create both and hide/show them)
         self.sigma_frame = ttk.Frame(smooth_frame)
@@ -515,7 +516,10 @@ class T1mesculpturesApp(tk.Tk):
     def update_smoothing_controls(self, *args):
         """Show or hide the relevant slider for the chosen smoothing method."""
         method = self.vars["smooth_method"].get()
-        if method == 'gaussian':
+        if method == 'auto':
+            self.sigma_frame.grid_remove()
+            self.iters_frame.grid_remove()
+        elif method == 'gaussian':
             self.sigma_frame.grid()
             self.iters_frame.grid_remove()
         elif method == 'constrained':

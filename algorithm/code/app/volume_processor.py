@@ -70,7 +70,7 @@ def smooth_volume(volume, method, **kwargs):
     # --- NEW: Interactive and Correct Smoothing Control ---
     # Based on the official source code for mcubes.smooth()
     
-    if method in ['gaussian', 'constrained']:
+    if method in ['auto', 'gaussian', 'constrained']:
         print(f"Applying '{method}' smoothing with params: {kwargs}...")
         smoothed_volume = mc.smooth(volume, method=method, **kwargs)
     else:
