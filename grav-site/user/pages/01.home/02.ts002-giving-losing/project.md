@@ -8,7 +8,7 @@ project_image:
         path: givinglosing_Showcase_01.png
 number: ts.002
 date: '2025-11-27'
-duration: 4s
+duration: 4.01s
 framesper: 120fps
 hover_video:
     ts002_giving-losing.webm:
@@ -17,5 +17,11 @@ hover_video:
         size: 142213
         path: ts002_giving-losing.webm
 project_gallery: {  }
+thumb_image:
+    givinglosing_Showcase_01_THUMB.png:
+        name: givinglosing_Showcase_01_THUMB.png
+        type: image/png
+        size: 103111
+        path: givinglosing_Showcase_01_THUMB.png
 ---
 

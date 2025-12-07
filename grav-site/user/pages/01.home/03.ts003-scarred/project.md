@@ -17,5 +17,11 @@ hover_video:
         size: 313822
         path: ts003_scarred.webm
 project_gallery: {  }
+thumb_image:
+    scarred_Showcase_01_THUMB.png:
+        name: scarred_Showcase_01_THUMB.png
+        type: image/png
+        size: 94863
+        path: scarred_Showcase_01_THUMB.png
 ---
 
