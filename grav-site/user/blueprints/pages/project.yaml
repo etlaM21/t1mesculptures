@@ -33,6 +33,14 @@ form:
               multiple: false
               accept: ['image/*']
 
+            # The THUMBNAIL Image
+            header.thumb_image:
+              type: file
+              label: Thumb Image (JPG/PNG)
+              destination: 'self@'
+              multiple: false
+              accept: ['image/*']
+
             # The Video
             header.hover_video:
               type: file

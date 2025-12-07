@@ -15,15 +15,15 @@
         
             <p>{{ p.header.number }}</p>
             <p>{{ p.title }}</p>
-            {# 1. The Static Image (FIXED) #}
-            {% if p.header.project_image %}
+            {# 1. The Static Image #}
+            {% if p.header.thumb_image %}
                 {# Get the first item from the list #}
-                {% set cover = p.header.project_image|first %}
+                {% set cover = p.header.thumb_image|first %}
                 {# Use cover.name to find the file #}
                 <img src="{{ p.media[cover.name].url }}" class="static-thumb" alt="{{ p.title }}">
             {% endif %}
 
-            {# 2. The Hover Video (FIXED) #}
+            {# 2. The Hover Video #}
             {% if p.header.hover_video %}
                 {# Get the first item from the list #}
                 {% set video_file = p.header.hover_video|first %}
