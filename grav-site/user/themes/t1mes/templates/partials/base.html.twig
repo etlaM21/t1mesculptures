@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>{{ page.title }} | {{ site.title }}</title>
+    
+    {# Load your CSS #}
+    <link rel="stylesheet" href="{{ url('theme://css/style.css') }}">
+    
+</head>
+<body>
+    {# This is where the Home or Project content gets injected #}
+    {% block content %}{% endblock %}
+
+    {# Simple JS to play video on hover #}
+    <script>
+        const cards = document.querySelectorAll('.project-card');
+        cards.forEach(card => {
+            const video = card.querySelector('video');
+            if(video) {
+                card.addEventListener('mouseenter', () => video.play());
+                card.addEventListener('mouseleave', () => {
+                    video.pause();
+                    video.currentTime = 0; // Optional: Reset video
+                });
+            }
+        });
+    </script>
+</body>
+</html>

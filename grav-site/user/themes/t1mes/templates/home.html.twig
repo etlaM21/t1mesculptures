@@ -1,0 +1,40 @@
+{% extends 'partials/base.html.twig' %}
+
+{% block content %}
+
+<main>
+    <header>
+        <h1>t1mesculptures</h1>
+        <h2 style="align-self: center; text-align: center">frozen time</h2>
+        <h1 style="align-self: end; text-align: right">etlaM</h1>
+    </header>
+    {# Loop through all child pages (projects) #}
+    {% for p in page.collection %}
+        
+        <a href="{{ p.url }}" class="project-card">
+        
+            <p>{{ p.header.number }}</p>
+            <p>{{ p.title }}</p>
+            {# 1. The Static Image (FIXED) #}
+            {% if p.header.project_image %}
+                {# Get the first item from the list #}
+                {% set cover = p.header.project_image|first %}
+                {# Use cover.name to find the file #}
+                <img src="{{ p.media[cover.name].url }}" class="static-thumb" alt="{{ p.title }}">
+            {% endif %}
+
+            {# 2. The Hover Video (FIXED) #}
+            {% if p.header.hover_video %}
+                {# Get the first item from the list #}
+                {% set video_file = p.header.hover_video|first %}
+                
+                <video loop muted playsinline class="hover-media" poster="">
+                    {# Use video_file.name #}
+                    <source src="{{ p.media[video_file.name].url }}" type="video/webm">
+                </video>
+            {% endif %}
+        </a>
+
+    {% endfor %}
+</main>
+{% endblock %}

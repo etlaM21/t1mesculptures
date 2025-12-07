@@ -1,0 +1,54 @@
+title: Project
+form:
+  fields:
+    tabs:
+      type: tabs
+      active: 1
+      fields:
+        content:
+          type: tab
+          title: Content
+          fields:
+            title:
+              type: text
+              label: Title
+            header.number:
+              type: text
+              label: Project Number
+            header.date:
+              type: date
+              label: Date
+            header.duration:
+              type: text
+              label: Duration
+            header.framesper:
+              type: text
+              label: Frames Per X
+            
+            # The Showcase Image
+            header.project_image:
+              type: file
+              label: Showcase Image (JPG/PNG)
+              destination: 'self@'
+              multiple: false
+              accept: ['image/*']
+
+            # The Video
+            header.hover_video:
+              type: file
+              label: Animation Video (WebM or GIF)
+              destination: 'self@'
+              multiple: false
+              accept: ['video/*', 'image/gif']
+
+            header.project_gallery:
+              type: file
+              label: Gallery Images
+              destination: 'self@'
+              multiple: true           # Allows multiple uploads
+              accept:
+                - image/*
+
+            content:
+              type: markdown
+              label: Description

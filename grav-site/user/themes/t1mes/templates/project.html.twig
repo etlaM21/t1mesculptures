@@ -1,0 +1,85 @@
+{% extends 'partials/base.html.twig' %}
+
+{% block content %}
+<main>
+    <nav>
+        <a href="../../"><h1>t1mesculptures</h1></a>
+    </nav>
+
+        <div class="project-main">
+            {# 1. Main Image Logic #}
+            {% if page.header.project_image %}
+                {# Get the first image from the array #}
+                {% set cover = page.header.project_image|first %}
+                
+                {% if cover %}
+                    {# Use cover.name to look up the real media object #}   
+                    <img src="{{ page.media[cover.name].url }}" alt="Main Cover">
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <div class="project-specs">
+            {% if page.header.number %}
+                <p style="align-self: start; left: 0;  text-align: left;">{{ page.header.number }}</p>
+            {% endif %}
+            
+            {% if page.header.date %}
+                <p style="align-self: start; right: 0; text-align: right;">{{ page.header.date }}</p>
+            {% endif %}
+
+            {% if page.title %}
+                <p style="align-self: center; text-align: center;  text-align: center; position: relative;">{{ page.title }}</p>
+            {% endif %}
+            
+
+            {% if page.header.duration %}
+                <p style="align-self: end; left: 0; text-align: left;">{{ page.header.duration }}</p>
+            {% endif %}
+            
+            {% if page.header.framesper %}
+                <p style="align-self: end; right: 0; text-align: right;">{{ page.header.framesper }}</p>
+            {% endif %}
+        </div>
+        <div class="project-vid">
+            {# 1. Main Image Logic #}
+            {% if page.header.hover_video %}
+                {# Get the first item from the list #}
+                {% set video_file = page.header.hover_video|first %}
+                
+                <video controls autoplay loop muted playsinline>
+                    {# Use video_file.name #}
+                    <source src="{{ page.media[video_file.name].url }}" type="video/webm">
+                </video>
+            {% endif %}
+        </div>
+
+    {# --- GALLERY --- #}
+    <div class="project-gallery">
+
+        {# 2. CORRECTED Gallery Loop (Safe for empty galleries) #}
+        {% if page.header.project_gallery %}
+            {% for image in page.header.project_gallery %}
+                {% set img_obj = page.media[image.name] %}
+                {% if img_obj %}
+                    <figure class="gallery-item">
+                        <img src="{{ img_obj.url }}" alt="{{ page.title }}">
+                    </figure>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        
+        <div class="description">
+            {{ page.content }}
+        </div>
+    <div class="project-meta">
+        {# The Description #}
+        
+        {# Placeholder for QR Code (We will add this later) #}
+        <div class="qr-code-section" style="border: 1px dashed #ccc; padding: 20px; text-align: center;">
+            <small>QR Code Space</small>
+        </div>
+    </div>
+
+</main>
+{% endblock %}
