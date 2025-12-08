@@ -40,7 +40,7 @@ class T1mesculpturesApp(tk.Tk):
 
         # --- Basic App Setup ---
         self.title("T1MESCULPTURES")
-        self.geometry("1100x900")
+        self.geometry("1080x825")
         
         # --- App State ---
         self.frames_list = [] # Holds the loaded image frames for the video
@@ -88,9 +88,28 @@ class T1mesculpturesApp(tk.Tk):
 
     def create_controls_widgets(self):
         """Populates the left-hand controls panel."""
-        frame = self.controls_frame
+        # --- Scrollable Container Setup ---
+        container = ttk.Frame(self.controls_frame)
+        container.pack(fill="both", expand=True)
+        
+        canvas = tk.Canvas(container, highlightthickness=0)
+        scrollbar = ttk.Scrollbar(container, orient="vertical", command=canvas.yview)
+        
+        scrollable_frame = ttk.Frame(canvas, padding=10)
+        scrollable_window = canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
 
-        frame.rowconfigure(5, weight=1) # Last Row of column (under action frame) is the only one that resizes, meaning everything keeps sticking up top
+        def configure_scroll_region(event): canvas.configure(scrollregion=canvas.bbox("all"))
+        def configure_window_width(event): canvas.itemconfig(scrollable_window, width=event.width)
+
+        scrollable_frame.bind("<Configure>", configure_scroll_region)
+        canvas.bind("<Configure>", configure_window_width)
+        canvas.configure(yscrollcommand=scrollbar.set)
+        
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        # Re-assign 'frame' so your existing code below works automatically
+        frame = scrollable_frame
         
         # --- 1. Input Frame ---
         input_frame = ttk.LabelFrame(frame, text="Input / Output", padding=10)
@@ -151,25 +170,10 @@ class T1mesculpturesApp(tk.Tk):
         ttk.Radiobutton(axis_frame, text="Y", variable=self.vars["up_axis"], value="Y").pack(side="left", padx=5)
         ttk.Radiobutton(axis_frame, text="Z", variable=self.vars["up_axis"], value="Z").pack(side="left", padx=5)
 
-        # --- 5. Actions Frame ---
-        action_frame = ttk.LabelFrame(frame, text="Actions", padding=10)
-        action_frame.grid(row=4, column=0, sticky="nsew", pady=15)
-        action_frame.columnconfigure(0, weight=1)
-        
-        self.generate_button = ttk.Button(action_frame, text="GENERATE MESH", command=self.start_generation_thread, style="Accent.TButton")
-        self.generate_button.grid(row=0, column=0, sticky="ew", pady=5, ipady=10)
-
-        self.manifold_status_label = ttk.Label(action_frame, text="", anchor="center")
-        self.manifold_status_label.grid(row=1, column=0, sticky="ew", pady=(5,0))
-
-        self.repair_button = ttk.Button(action_frame, text="Repair Non-Manifold Mesh", state="disabled", command=self.repair_mesh_command)
-        self.repair_button.grid(row=2, column=0, sticky="ew",  pady=5, ipady=10)
-        
-        self.save_button = ttk.Button(action_frame, text="Save Final Mesh", state="disabled", command=self.save_final_mesh)
-        self.save_button.grid(row=3, column=0, sticky="ew", pady=5)
+       # --- 5. Feedback Frame ---
 
         feedback_frame = ttk.LabelFrame(frame, text="Study & Feedback", padding=10)
-        feedback_frame.grid(row=5, column=0, sticky="ew", pady=5)
+        feedback_frame.grid(row=4, column=0, sticky="ew", pady=5)
         feedback_frame.columnconfigure(0, weight=1)
 
         def open_link(url): webbrowser.open(url)
@@ -184,9 +188,10 @@ class T1mesculpturesApp(tk.Tk):
     def create_output_widgets(self):
         """Populates the right-hand output panel."""
         frame = self.output_frame
-        frame.rowconfigure(0, weight=5) # Notebook takes up most space
-        frame.rowconfigure(1, weight=0) # Stats are small
-        frame.rowconfigure(2, weight=1) # Log takes up some space
+        frame.rowconfigure(0, weight=10) # Notebook
+        frame.rowconfigure(1, weight=0) # Stats
+        frame.rowconfigure(2, weight=0) # Actions
+        frame.rowconfigure(3, weight=1) # Log
         frame.columnconfigure(0, weight=1)
         
         # --- 1. Notebook (Tabs) ---
@@ -199,14 +204,15 @@ class T1mesculpturesApp(tk.Tk):
         self.video_tab.rowconfigure(0, weight=1)
         self.video_tab.columnconfigure(0, weight=1)
         self.video_tab.columnconfigure(1, weight=1)
+        self.video_tab.columnconfigure(2, weight=1)
         self.video_label = ttk.Label(self.video_tab, text="Select a folder to see video preview.", anchor="center")
-        self.video_label.grid(row=0, column=0, columnspan=2, sticky="nsew")
+        self.video_label.grid(row=0, column=0, columnspan=3, sticky="nsew")
         self.play_button = ttk.Button(self.video_tab, text="Play", state="disabled", command=self.play_video)
         self.play_button.grid(row=1, column=0, sticky="n", padx=5, pady=5)
         self.pause_button = ttk.Button(self.video_tab, text="Pause", state="disabled", command=self.pause_video)
-        self.pause_button.grid(row=1, column=1, sticky="n", padx=5, pady=5)
+        self.pause_button.grid(row=1, column=2, sticky="n", padx=5, pady=5)
         self.export_video_button = ttk.Button(self.video_tab, text="Export WEBM", state="disabled", command=self.export_video_command)
-        self.export_video_button.grid(row=1, column=2, sticky="n", padx=5, pady=5)
+        self.export_video_button.grid(row=1, column=1, sticky="n", padx=5, pady=5)
 
         # Treshhold Preview Tab
         self.threshold_tab = ttk.Frame(self.notebook, padding=10)
@@ -238,13 +244,28 @@ class T1mesculpturesApp(tk.Tk):
         self.faces_label = ttk.Label(stats_frame, text="Faces: N/A")
         self.faces_label.grid(row=0, column=2, sticky="e", padx=5)
 
-        # --- 3. Log Frame ---
+        # --- 3. Actions Frame ---
+        action_frame = ttk.LabelFrame(frame, text="Actions", padding=10)
+        action_frame.grid(row=2, column=0, sticky="ew", pady=15)
+        action_frame.columnconfigure(0, weight=1)
+        action_frame.columnconfigure(1, weight=1)
+
+        self.generate_button = ttk.Button(action_frame, text="GENERATE MESH", command=self.start_generation_thread, style="Accent.TButton")
+        self.generate_button.grid(row=0, column=0, columnspan=2, sticky="ew", pady=5, ipady=10)
+        self.manifold_status_label = ttk.Label(action_frame, text="", anchor="center")
+        self.manifold_status_label.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(5,0))
+        self.repair_button = ttk.Button(action_frame, text="Repair Mesh", state="disabled", command=self.repair_mesh_command)
+        self.repair_button.grid(row=2, column=0, sticky="ew", padx=(0, 5), pady=5) # padx creates a gap on the right
+        self.save_button = ttk.Button(action_frame, text="Save Mesh", state="disabled", command=self.save_final_mesh)
+        self.save_button.grid(row=2, column=1, sticky="ew", padx=(5, 0), pady=5) # padx creates a gap on the left
+
+        # --- 4. Log Frame ---
         log_frame = ttk.LabelFrame(frame, text="Log", padding=10)
-        log_frame.grid(row=2, column=0, sticky="nsew", pady=5)
+        log_frame.grid(row=3, column=0, sticky="nsew", pady=5)
         log_frame.rowconfigure(0, weight=1)
         log_frame.columnconfigure(0, weight=1)
         
-        self.log_text = tk.Text(log_frame, height=5, wrap="word", state="disabled")
+        self.log_text = tk.Text(log_frame, height=3, wrap="word", state="disabled")
         self.log_text.grid(row=0, column=0, sticky="nsew")
         
         scrollbar = ttk.Scrollbar(log_frame, command=self.log_text.yview)
