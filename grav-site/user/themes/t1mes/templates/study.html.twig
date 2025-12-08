@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Translation Plan</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            background: #333;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 20px 100px 20px;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        /* --- THE LANDSCAPE PAPER --- */
+        #paper {
+            background: #fff;
+            width: 1400px;
+            max-width: 100%;
+            aspect-ratio: 16 / 9; 
+            min-height: 700px; 
+            padding: 40px 100px 40px 40px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 1;
+
+            /* CSS GRID LAYOUT */
+            display: grid;
+            grid-template-columns: 60% 40%;
+            grid-template-rows: auto 1fr;
+            gap: 20px 50px;
+            grid-template-areas: 
+                "header header"
+                "leftCol rightCol";
+            box-sizing: border-box;
+        }
+
+        /* --- HEADER & NAME --- */
+        .header-group { 
+            grid-area: header; 
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 2px solid #000; 
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        
+        h1 { margin: 0; text-transform: uppercase; letter-spacing: 2px; font-size: 2rem;}
+        
+        .name-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+        }
+        .name-field input {
+            border: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #000;
+            border-bottom: 1px dashed #000;
+            width: 250px;
+            outline: none;
+        }
+
+        /* --- COLUMNS --- */
+        .left-column { 
+            grid-area: leftCol;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 100%; 
+        }
+
+        .right-column { 
+            grid-area: rightCol;
+            display: flex;
+            flex-direction: column;
+            gap: 30px; 
+            padding-left: 30px;
+            border-left: 1px dashed #ccc; 
+        }
+
+        .free-space-container {
+            flex-grow: 1; 
+            border: 3px dashed #e0e0e0;
+            padding: 20px;
+            color: #ccc;
+            position: relative;
+            background: #fafafa;
+            min-height: 200px;
+        }
+
+        /* --- DRAWING CANVAS --- */
+        #drawing-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10; pointer-events: none; cursor: crosshair;
+        }
+        #paper.drawing-mode #drawing-canvas { pointer-events: auto; background: rgba(0,0,0,0.01); }
+
+        /* --- FORM ELEMENTS --- */
+        .section { position: relative; z-index: 5; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 1.1rem; }
+        .help { display: block; font-size: 0.9rem; color: #666; margin-bottom: 8px; font-style: italic;}
+        
+        input[type="text"], textarea {
+            width: 100%; border: none; background: transparent;
+            border-bottom: 1px dashed #999; font-family: inherit;
+            font-size: 1.1rem; padding: 5px 0; outline: none; resize: none; z-index: 5;
+        }
+        textarea { 
+            height: 173px; line-height: 1.5em; 
+            background-image: repeating-linear-gradient(transparent, transparent 1.4em, #ccc 1.4em, #ccc 1.5em, transparent 1.5em);
+        }
+
+        /* --- THE STATIC "DRAW HERE" LINE --- */
+        .draw-slider {
+            width: 100%;
+            height: 3px;
+            background: #000;
+            margin: 30px 0 10px 0;
+            position: relative;
+        }
+        /* Tick Marks (Pseudo Elements) */
+        .draw-slider::before, .draw-slider::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            width: 3px;
+            height: 23px;
+            background: #000;
+        }
+        .draw-slider::before { left: 0; }
+        .draw-slider::after { right: 0; }
+
+
+        /* --- DRAGGABLE IMAGES --- */
+        .img-container {
+            position: absolute; border: 5px solid white;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2); z-index: 20; cursor: grab; touch-action: none;
+        }
+        .img-container:active { cursor: grabbing; }
+        .img-container img { display: block; max-width: 250px; pointer-events: none; }
+        .del-btn {
+            position: absolute; top: -15px; right: -15px;
+            background: red; color: white; border-radius: 50%;
+            width: 25px; height: 25px; text-align: center; line-height: 25px;
+            font-weight: bold; cursor: pointer; display: none; z-index: 25;
+        }
+        .img-container:hover .del-btn { display: block; }
+
+        /* --- TOOLBAR --- */
+        #toolbar {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: #000; padding: 10px 20px; border-radius: 50px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3); z-index: 1000;
+            display: flex; gap: 15px; align-items: center; flex-wrap: wrap; justify-content: center;
+        }
+        button {
+            background: #333; color: #fff; border: 1px solid #555;
+            padding: 10px 20px; border-radius: 20px; cursor: pointer;
+            font-family: inherit; white-space: nowrap;
+        }
+        button:hover { background: #555; }
+        button.active { background: #0044ff; border-color: #0044ff; font-weight: bold; }
+        #send-btn { background: #009944; border-color: #009944; }
+        #loading {
+            position: fixed; top:0; left:0; width:100%; height:100%;
+            background: rgba(0,0,0,0.8); color: white;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; font-size: 2rem; display: none;
+        }
+
+        /* Mobile Stack */
+        @media (max-width: 900px) {
+            #paper { display: flex; flex-direction: column; aspect-ratio: auto; width: 100%; padding: 20px;}
+            .header-group { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .left-column, .right-column { padding: 0; border: none; }
+            .free-space-container { min-height: 300px; order: 10; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="paper">
+        <canvas id="drawing-canvas"></canvas>
+
+        <div class="header-group">
+            <h1>Translation Plan</h1>
+            <div class="name-field">
+                <span>NAME:</span>
+                <input type="text" placeholder="Enter Name..." id="name-input">
+            </div>
+        </div>
+
+        <div class="left-column">
+            <div class="section">
+                <label>he Object of Desire</label>
+                <span class="help">What movement do you want to translate into space or what object into time?</span>
+                <input type="text" placeholder="Start typing...">
+            </div>
+             
+            <div class="free-space-container section">
+                (Free space for sketches, photos, and notes)
+            </div>
+        </div>
+
+        <div class="right-column">
+            <div class="section">
+                <label>The Hypothesis</label>
+                <span class="help">"If I animate like X, it will end up like Y"</span>
+                <textarea placeholder="Write here..."></textarea>
+            </div>
+
+            <div class="section">
+                <label>Confidence Meter</label>
+                <span class="help" style="color: #0044ff;"><strong>Action:</strong> Use Pen Mode to mark an X on the line.</span>
+                
+                <div class="draw-slider"></div>
+                
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #000; font-weight: bold;">
+                    <span>0% (Unsure)</span><span>100% (Certain)</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <label>Anticipated Friction</label>
+                <span class="help">What challenge(s) do you see?</span>
+                <textarea placeholder="Hardest part will be..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div id="toolbar">
+        <button id="pen-btn" onclick="togglePen()">✎ Pen Mode: OFF</button>
+        <button onclick="document.getElementById('img-upload').click()">+ Photo</button>
+        <button onclick="clearCanvas()">Clear Ink</button>
+        <button id="send-btn" onclick="sendForm()">Scan & Send ➤</button>
+    </div>
+    <input type="file" id="img-upload" style="display:none" accept="image/*">
+    <div id="loading">Scanning & Sending...</div>
+
+    <script>
+        const paper = document.getElementById('paper');
+        const canvas = document.getElementById('drawing-canvas');
+        const ctx = canvas.getContext('2d');
+        let drawingMode = false;
+
+        function resizeCanvas() {
+            canvas.width = paper.offsetWidth;
+            canvas.height = paper.offsetHeight;
+            ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.strokeStyle = '#0000ff';
+        }
+        window.addEventListener('load', resizeCanvas);
+        window.addEventListener('resize', resizeCanvas);
+        setTimeout(resizeCanvas, 500);
+
+        // --- PEN LOGIC ---
+        function togglePen() {
+            drawingMode = !drawingMode;
+            const btn = document.getElementById('pen-btn');
+            if(drawingMode) {
+                paper.classList.add('drawing-mode');
+                btn.classList.add('active'); btn.innerHTML = "✎ Pen Mode: ON";
+            } else {
+                paper.classList.remove('drawing-mode');
+                btn.classList.remove('active'); btn.innerHTML = "✎ Pen Mode: OFF";
+            }
+        }
+        function clearCanvas() {
+            if(confirm('Clear all drawings?')) ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        // Drawing Events
+        let painting = false;
+        function startDraw(e) { if(!drawingMode) return; painting = true; draw(e); }
+        function endDraw() { painting = false; ctx.beginPath(); }
+        function draw(e) {
+            if (!painting || !drawingMode) return;
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.clientX || e.touches[0].clientX;
+            const clientY = e.clientY || e.touches[0].clientY;
+            ctx.lineTo(clientX - rect.left, clientY - rect.top);
+            ctx.stroke(); ctx.beginPath();
+            ctx.moveTo(clientX - rect.left, clientY - rect.top);
+        }
+        canvas.addEventListener('mousedown', startDraw); canvas.addEventListener('mouseup', endDraw); canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('touchstart', startDraw, {passive: false}); canvas.addEventListener('touchend', endDraw); canvas.addEventListener('touchmove', draw, {passive: false});
+
+        // --- PHOTO LOGIC ---
+        document.getElementById('img-upload').addEventListener('change', function(e) {
+            if(this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = evt => createImage(evt.target.result);
+                reader.readAsDataURL(this.files[0]);
+            }
+            this.value = '';
+        });
+        function createImage(src) {
+            const div = document.createElement('div'); div.className = 'img-container';
+            const img = document.createElement('img'); img.src = src;
+            const del = document.createElement('div'); del.className = 'del-btn'; del.innerHTML = 'X';
+            del.onclick = () => div.remove();
+            div.appendChild(img); div.appendChild(del);
+            paper.appendChild(div);
+            div.style.left = (paper.offsetWidth * 0.3) + 'px';
+            div.style.top = (paper.offsetHeight * 0.4) + 'px';
+            makeDraggable(div);
+        }
+        function makeDraggable(el) {
+            let isDragging = false; let startX, startY, initialLeft, initialTop;
+            const onStart = (e) => {
+                if(e.target.classList.contains('del-btn')) return;
+                isDragging = true;
+                startX = e.clientX || e.touches[0].clientX; startY = e.clientY || e.touches[0].clientY;
+                initialLeft = el.offsetLeft; initialTop = el.offsetTop;
+                el.style.cursor = 'grabbing';
+            };
+            const onMove = (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const dx = (e.clientX || e.touches[0].clientX) - startX;
+                const dy = (e.clientY || e.touches[0].clientY) - startY;
+                el.style.left = (initialLeft + dx) + 'px'; el.style.top = (initialTop + dy) + 'px';
+            };
+            const onEnd = () => { isDragging = false; el.style.cursor = 'grab'; };
+            el.addEventListener('mousedown', onStart); window.addEventListener('mousemove', onMove); window.addEventListener('mouseup', onEnd);
+            el.addEventListener('touchstart', onStart, {passive: false}); window.addEventListener('touchmove', onMove, {passive: false}); window.addEventListener('touchend', onEnd);
+        }
+        
+        // --- SUBMIT ---
+        function sendForm() {
+            if(drawingMode) togglePen();
+            document.getElementById('loading').style.display = 'flex';
+            
+            // --- STEP 1: PREPARE THE DOM (Live Swap) ---
+            // We create temporary "Text" versions of all inputs so html2canvas sees simple HTML
+            const undoList = [];
+            const paperElement = document.getElementById('paper');
+
+            // A. Fix Textareas
+            const textareas = paperElement.querySelectorAll('textarea');
+            textareas.forEach(ta => {
+                const div = document.createElement('div');
+                div.innerText = ta.value; // Preserves newlines in text content
+                
+                // Copy essential styles
+                const style = window.getComputedStyle(ta);
+                div.style.width = style.width;
+                div.style.minHeight = style.height; // Use minHeight so it expands if needed
+                div.style.padding = style.padding;
+                div.style.fontFamily = style.fontFamily;
+                div.style.fontSize = style.fontSize;
+                div.style.lineHeight = style.lineHeight;
+                div.style.border = "none";
+                div.style.borderBottom = "1px dashed #999";
+                
+                // CRITICAL: Force line breaks and wrapping
+                div.style.whiteSpace = "pre-wrap"; 
+                div.style.wordBreak = "break-word";
+                
+                // Background Lines
+                div.style.background = style.background;
+                div.style.backgroundAttachment = "local";
+                
+                // Swap
+                ta.style.display = 'none';
+                ta.parentNode.insertBefore(div, ta);
+                undoList.push(() => {
+                    div.remove();
+                    ta.style.display = '';
+                });
+            });
+
+            // B. Fix Input Fields (Name, Object of Desire)
+            const inputs = paperElement.querySelectorAll('input[type="text"]');
+            inputs.forEach(input => {
+                if(input.value) { // Only replace if there is text
+                    const span = document.createElement('div');
+                    span.innerText = input.value;
+                    
+                    const style = window.getComputedStyle(input);
+                    span.style.fontFamily = style.fontFamily;
+                    span.style.fontSize = style.fontSize;
+                    span.style.fontWeight = style.fontWeight;
+                    span.style.borderBottom = "1px dashed #999";
+                    span.style.width = style.width;
+                    span.style.display = "inline-block";
+                    span.style.whiteSpace = "pre-wrap";
+                    
+                    input.style.display = 'none';
+                    input.parentNode.insertBefore(span, input);
+                    undoList.push(() => {
+                        span.remove();
+                        input.style.display = '';
+                    });
+                }
+            });
+
+            // --- STEP 2: CAPTURE ---
+            // Small timeout to let the DOM refresh with the new divs
+            setTimeout(() => {
+                 const paperWidth = paperElement.scrollWidth;
+                 const paperHeight = paperElement.scrollHeight;
+
+                 html2canvas(paperElement, {
+                    scale: 1.5,
+                    useCORS: true, 
+                    width: paperWidth,
+                    height: paperHeight,
+                    windowWidth: paperWidth, 
+                    windowHeight: paperHeight,
+                    scrollX: 0, 
+                    scrollY: 0
+                }).then(canvas => {
+                    
+                    // --- STEP 3: REVERT DOM IMMEDIATELY ---
+                    undoList.forEach(undo => undo());
+
+                    // --- STEP 4: SEND ---
+                    fetch('/send_probe.php', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ image: canvas.toDataURL("image/png") })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById('loading').style.display = 'none';
+                        if(data.status === 'success') { alert("Translation Plan sent! Thank you."); location.reload(); }
+                        else { alert("Error: " + data.message); }
+                    })
+                    .catch(err => { document.getElementById('loading').style.display = 'none'; alert("Network Error: " + err); });
+                });
+            }, 100);
+        }
+    </script>
+</body>
+</html>
