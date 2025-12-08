@@ -10,31 +10,32 @@
     </header>
     {# Loop through all child pages (projects) #}
     {% for p in page.collection %}
-        
-        <a href="{{ p.url }}" class="project-card">
-        
-            <p>{{ p.header.number }}</p>
-            <p>{{ p.title }}</p>
-            {# 1. The Static Image #}
-            {% if p.header.thumb_image %}
-                {# Get the first item from the list #}
-                {% set cover = p.header.thumb_image|first %}
-                {# Use cover.name to find the file #}
-                <img src="{{ p.media[cover.name].url }}" class="static-thumb" alt="{{ p.title }}">
-            {% endif %}
+        {% if p.header.show_on_home != false %}
+            
+            <a href="{{ p.url }}" class="project-card">
+            
+                <p>{{ p.header.number }}</p>
+                <p>{{ p.title }}</p>
+                {# 1. The Static Image #}
+                {% if p.header.thumb_image %}
+                    {# Get the first item from the list #}
+                    {% set cover = p.header.thumb_image|first %}
+                    {# Use cover.name to find the file #}
+                    <img src="{{ p.media[cover.name].url }}" class="static-thumb" alt="{{ p.title }}">
+                {% endif %}
 
-            {# 2. The Hover Video #}
-            {% if p.header.hover_video %}
-                {# Get the first item from the list #}
-                {% set video_file = p.header.hover_video|first %}
-                
-                <video loop muted playsinline class="hover-media" poster="">
-                    {# Use video_file.name #}
-                    <source src="{{ p.media[video_file.name].url }}" type="video/webm">
-                </video>
-            {% endif %}
-        </a>
-
+                {# 2. The Hover Video #}
+                {% if p.header.hover_video %}
+                    {# Get the first item from the list #}
+                    {% set video_file = p.header.hover_video|first %}
+                    
+                    <video loop muted playsinline class="hover-media" poster="">
+                        {# Use video_file.name #}
+                        <source src="{{ p.media[video_file.name].url }}" type="video/webm">
+                    </video>
+                {% endif %}
+            </a>
+        {% endif %}
     {% endfor %}
 </main>
 {% endblock %}

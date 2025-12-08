@@ -15,6 +15,17 @@ form:
             header.number:
               type: text
               label: Project Number
+            header.show_on_home:
+              type: toggle
+              label: Show on Homepage Grid?
+              help: If No, the project is still accessible via link/QR, but hidden from the main list.
+              highlight: 1
+              default: 1
+              options:
+                1: 'Yes'
+                0: 'No'
+              validate:
+                type: bool
             header.date:
               type: date
               label: Date
