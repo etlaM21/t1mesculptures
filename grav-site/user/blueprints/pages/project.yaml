@@ -60,3 +60,53 @@ form:
             content:
               type: markdown
               label: Description
+
+            qr_section:
+              type: section
+              title: QR Code for direct link via permanent redirect
+              underline: true
+            
+            qr_preview:
+              type: display
+              label: QR Code (Right Click to Save)
+              markdown: true
+              content: |
+                <div id="qr-target" style="text-align: center; padding: 20px; border: 1px solid #eee; background: white;">
+                    Loading...
+                </div>
+                
+                <script>
+                (function() {
+                    function generateQR() {
+                        // 1. Get the slug from the current Admin URL
+                        // URL format: .../pages/sculptures/ts001-giving-losing
+                        var urlParts = window.location.href.split('/');
+                        var slug = urlParts[urlParts.length - 1];
+
+                        // If we are on the "Add Page" screen, we can't generate a QR yet
+                        if (slug === 'add' || !slug) {
+                             document.getElementById('qr-target').innerHTML = "<em>Please save the page first to generate the QR Code.</em>";
+                             return;
+                        }
+
+                        // 2. Define your domain
+                        var myDomain = window.location.origin; 
+                        
+                        // 3. Build the Redirect URL: /scan/ts001-giving-losing
+                        var finalUrl = myDomain + "/scan/" + slug;
+                        
+                        // 4. Build the API URL for the image
+                        var apiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=1024x1024&format=svg&data=" + encodeURIComponent(finalUrl);
+                        
+                        // 5. Render the HTML
+                        var html = '<a href="' + apiUrl + '" download="qrcode.png" target="_blank">';
+                        html += '<img src="' + apiUrl + '" style="width: 200px; height: 200px;" alt="QR Code"></a>';
+                        html += '<br><div style="margin-top:10px; font-family:monospace; background:#f4f4f4; padding:5px;">' + finalUrl + '</div>';
+                        
+                        document.getElementById('qr-target').innerHTML = html;
+                    }
+
+                    // Run slightly after load to ensure page is ready
+                    setTimeout(generateQR, 500);
+                    })();
+                  </script>
