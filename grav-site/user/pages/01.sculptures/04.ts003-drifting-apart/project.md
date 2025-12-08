@@ -23,5 +23,6 @@ thumb_image:
         type: image/png
         size: 80558
         path: drifting-apart_Showcase_01_THUMB.png
+show_on_home: true
 ---
 

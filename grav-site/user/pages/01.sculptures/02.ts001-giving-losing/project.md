@@ -23,5 +23,6 @@ thumb_image:
         type: image/png
         size: 103111
         path: givinglosing_Showcase_01_THUMB.png
+show_on_home: true
 ---
 

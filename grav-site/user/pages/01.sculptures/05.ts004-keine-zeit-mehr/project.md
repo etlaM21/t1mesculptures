@@ -23,5 +23,6 @@ hover_video:
         size: 802016
         path: ts004_keine-zeit-mehr.webm
 project_gallery: {  }
+show_on_home: true
 ---
 

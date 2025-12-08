@@ -23,5 +23,6 @@ thumb_image:
         type: image/png
         size: 109712
         path: GENESIS_Showcase_01_THUJMB.png
+show_on_home: true
 ---
 

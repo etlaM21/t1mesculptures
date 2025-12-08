@@ -23,5 +23,6 @@ thumb_image:
         type: image/png
         size: 94863
         path: scarred_Showcase_01_THUMB.png
+show_on_home: true
 ---
 
