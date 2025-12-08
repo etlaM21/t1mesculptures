@@ -10,6 +10,8 @@ import sys # For redirecting stdout
 # For video preview
 from PIL import Image, ImageTk  
 import cv2 as cv
+# For the surveys
+import webbrowser
 
 # Import own modules
 import data_loader
@@ -38,7 +40,7 @@ class T1mesculpturesApp(tk.Tk):
 
         # --- Basic App Setup ---
         self.title("T1MESCULPTURES")
-        self.geometry("1100x775")
+        self.geometry("1100x900")
         
         # --- App State ---
         self.frames_list = [] # Holds the loaded image frames for the video
@@ -55,12 +57,13 @@ class T1mesculpturesApp(tk.Tk):
             "filetype": tk.StringVar(value="png"),
             "output_name": tk.StringVar(value="t1mesculpture"),
             "threshold": tk.IntVar(value=127),
-            "fps": tk.IntVar(value=30),
+            "fps": tk.IntVar(value=120),
             "scale_factor": tk.DoubleVar(value=0.5),
-            "smooth_method": tk.StringVar(value="auto"),
+            "smooth_method": tk.StringVar(value="gaussian"),
             "smooth_sigma": tk.DoubleVar(value=1.5),
             "smooth_iters": tk.IntVar(value=50),
             "decimation": tk.DoubleVar(value=0.9),
+            "up_axis": tk.StringVar(value="Z"),
         }
 
         # --- Main Layout ---
@@ -110,7 +113,7 @@ class T1mesculpturesApp(tk.Tk):
         data_frame.columnconfigure(1, weight=1)
         
         self.create_slider(data_frame, "Threshold:", self.vars["threshold"], 0, 255, 0, slider_id="threshold")
-        self.create_slider(data_frame, "FPS:", self.vars["fps"], 1, 120, 1)
+        self.create_slider(data_frame, "FPS:", self.vars["fps"], 1, 240, 1)
         self.create_slider(data_frame, "Scale Factor:", self.vars["scale_factor"], 0.1, 1.0, 2)
 
         # --- 3. Smoothing Frame ---
@@ -139,6 +142,15 @@ class T1mesculpturesApp(tk.Tk):
         opt_frame.columnconfigure(1, weight=1)
         self.create_slider(opt_frame, "Decimation %:", self.vars["decimation"], 0.0, 1.0, 0)
 
+        ttk.Separator(opt_frame, orient="horizontal").grid(row=1, column=0, columnspan=3, sticky="ew", pady=10)
+        ttk.Label(opt_frame, text="Up Axis (Print Orientation):").grid(row=2, column=0, sticky="w", columnspan=3)
+        
+        axis_frame = ttk.Frame(opt_frame)
+        axis_frame.grid(row=3, column=0, columnspan=3, sticky="w")
+        ttk.Radiobutton(axis_frame, text="X", variable=self.vars["up_axis"], value="X").pack(side="left", padx=5)
+        ttk.Radiobutton(axis_frame, text="Y", variable=self.vars["up_axis"], value="Y").pack(side="left", padx=5)
+        ttk.Radiobutton(axis_frame, text="Z", variable=self.vars["up_axis"], value="Z").pack(side="left", padx=5)
+
         # --- 5. Actions Frame ---
         action_frame = ttk.LabelFrame(frame, text="Actions", padding=10)
         action_frame.grid(row=4, column=0, sticky="nsew", pady=15)
@@ -155,6 +167,19 @@ class T1mesculpturesApp(tk.Tk):
         
         self.save_button = ttk.Button(action_frame, text="Save Final Mesh", state="disabled", command=self.save_final_mesh)
         self.save_button.grid(row=3, column=0, sticky="ew", pady=5)
+
+        feedback_frame = ttk.LabelFrame(frame, text="Study & Feedback", padding=10)
+        feedback_frame.grid(row=5, column=0, sticky="ew", pady=5)
+        feedback_frame.columnconfigure(0, weight=1)
+
+        def open_link(url): webbrowser.open(url)
+
+        ttk.Button(feedback_frame, text="1. Sculpture Log (Click me!)", style="Accent.TButton", 
+                   command=lambda: open_link("https://docs.google.com/forms/d/e/1FAIpQLSf55DBjKC6Gz1nBM97sZOVSKBZpGQgTRvrTAs9uypO_03rtew/viewform?usp=dialog")).pack(fill="x", pady=2)
+        ttk.Button(feedback_frame, text="2. Eureka Log", 
+                   command=lambda: open_link("https://docs.google.com/forms/d/e/1FAIpQLSdpAtH1LuoQJPaEP8Uz4s7WbqXqRtJkO1Omy2z0hDwEZIcslQ/viewform?usp=preview")).pack(fill="x", pady=2)
+        ttk.Button(feedback_frame, text="3. Translation Plan", 
+                   command=lambda: open_link("https://t1mesculptures.maltehillebrand.de/study/translation-plan")).pack(fill="x", pady=2)
         
     def create_output_widgets(self):
         """Populates the right-hand output panel."""
@@ -180,6 +205,8 @@ class T1mesculpturesApp(tk.Tk):
         self.play_button.grid(row=1, column=0, sticky="n", padx=5, pady=5)
         self.pause_button = ttk.Button(self.video_tab, text="Pause", state="disabled", command=self.pause_video)
         self.pause_button.grid(row=1, column=1, sticky="n", padx=5, pady=5)
+        self.export_video_button = ttk.Button(self.video_tab, text="Export WEBM", state="disabled", command=self.export_video_command)
+        self.export_video_button.grid(row=1, column=2, sticky="n", padx=5, pady=5)
 
         # Treshhold Preview Tab
         self.threshold_tab = ttk.Frame(self.notebook, padding=10)
@@ -339,6 +366,7 @@ class T1mesculpturesApp(tk.Tk):
             self.update_threshold_preview()
             self.play_button.config(state="normal")
             self.pause_button.config(state="disabled")
+            self.export_video_button.config(state="normal")
             print("Video preview loaded.")
             self.play_video()
             
@@ -510,6 +538,49 @@ class T1mesculpturesApp(tk.Tk):
         if hasattr(self, "_threshold_resize_job"):
              self.after_cancel(self._threshold_resize_job)
         self._threshold_resize_job = self.after(10, self.update_threshold_preview)
+
+    # --- Threshholded Video Export ---
+    def export_video_command(self):
+        """Exports the thresholded video to WEBM using cv2."""
+        if not self.frames_list: return
+
+        default_name = f"{self.vars['output_name'].get()}_{self.vars['fps'].get()}fps.webm"
+        output_path = filedialog.asksaveasfilename(
+            initialfile=default_name,
+            defaultextension=".webm",
+            filetypes=[("WEBM Video", "*.webm")]
+        )
+        if not output_path: return
+
+        fps = self.vars["fps"].get()
+        threshold = self.vars["threshold"].get()
+        
+        # Get dimensions from the first frame
+        h, w = self.frames_list[0].imagegray.shape
+        
+        print(f"Exporting video to {output_path} at {fps} FPS...")
+        
+        try:
+            # Define codec for WEBM (VP80 is standard for webm in cv2)
+            fourcc = cv.VideoWriter_fourcc(*'VP80') 
+            
+            # Create writer. isColor=False because threshold is grayscale.
+            out = cv.VideoWriter(output_path, fourcc, fps, (w, h), isColor=False)
+            
+            if not out.isOpened():
+                raise ValueError("Could not open video writer. You might be missing the VP8/VP9 codec.")
+
+            for frame in self.frames_list:
+                _, mask = cv.threshold(frame.imagegray, threshold, 255, cv.THRESH_BINARY)
+                out.write(mask)
+            
+            out.release()
+            print("Export complete.")
+            messagebox.showinfo("Success", f"Video exported to:\n{output_path}")
+            
+        except Exception as e:
+            print(f"Export failed: {e}")
+            messagebox.showerror("Export Error", f"Could not export video:\n{e}\n\nTry installing openh264 or ffmpeg if this persists.")
 
     # --- UI Functions ---
             
@@ -746,27 +817,68 @@ class T1mesculpturesApp(tk.Tk):
         else:
             messagebox.showerror("Error", "No mesh result found. Please run 'GENERATE MESH' first.")
             return None
+    
+    def get_rotated_mesh(self, mesh):
+        """Applies rotation based on the selected UP axis."""
+        up_axis = self.vars["up_axis"].get()
+        
+        # Create a copy so we don't rotate the cached original multiple times
+        rotated_mesh = mesh.copy()
+        
+        # 1. Default: X is Up
+        # No rotation needed, just ensure it's centered later
+        if up_axis == "X":
+            pass
+            
+        # 2. Y is Up
+        # We need to rotate +90 degrees around the X-axis
+        # This moves +Y to +Z
+        elif up_axis == "Y":
+            print("Rotating +90 X (Aligning Height to Up)...")
+            rotated_mesh.rotate_z(90, inplace=True)
+            
+        # 3. Z is Up
+        # We need to rotate -90 degrees around the Y-axis
+        # This moves +X to +Z
+        elif up_axis == "Z":
+            print("Rotating -90 Y (Aligning Width to Up)...")
+            rotated_mesh.rotate_y(-90, inplace=True)
+            
+        # --- Center the mesh ---
+        # This ensures the model stays in the middle of the preview/print bed
+        # regardless of how we flipped it.
+        center = rotated_mesh.center
+        rotated_mesh.translate((-center[0], -center[1], -center[2]), inplace=True)
+        
+        return rotated_mesh
+
+    def get_current_mesh(self):
+        """Helper to get and orient the current final mesh."""
+        if self.final_mesh_result is None:
+            messagebox.showerror("Error", "No mesh result found. Please run 'GENERATE MESH' first.")
+            return None
+        return self.get_rotated_mesh(self.final_mesh_result)
 
     def show_3d_preview(self):
         """Run optimization and show the PyVista plotter."""
-        print("Running optimization for preview...")
-        final_surface = self.get_optimized_mesh()
+        # Use the helper to get the potentially rotated mesh
+        final_surface = self.get_current_mesh() 
         
         if final_surface:
-            print("Displaying 3D preview in new window...")
+            print("Displaying 3D preview...")
             plotter = pv.Plotter()
             plotter.add_mesh(final_surface, show_edges=True)
+            plotter.add_axes() # Useful to see the orientation
             plotter.show()
-            print("Preview window closed.")
+            print("Preview closed.")
 
     def save_final_mesh(self):
         """Run optimization and open a 'Save As' dialog."""
-        print("Running optimization for saving...")
-        final_surface = self.get_optimized_mesh()
+        final_surface = self.get_current_mesh()
         
         if final_surface:
-            # Open "Save As" dialog
-            default_name = f"{self.vars['output_name'].get()}_{int(self.vars['decimation'].get()*100)}percent.stl"
+            # Add the orientation to the default filename
+            default_name = f"{self.vars['output_name'].get()}_{self.vars['fps'].get()}fps_{self.vars['up_axis'].get()}up_{self.vars['decimation'].get()}decimation.stl"
             filepath = filedialog.asksaveasfilename(
                 initialfile=default_name,
                 defaultextension=".stl",
