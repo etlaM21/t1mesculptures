@@ -899,7 +899,7 @@ class T1mesculpturesApp(tk.Tk):
         
         if final_surface:
             # Add the orientation to the default filename
-            default_name = f"{self.vars['output_name'].get()}_{self.vars['fps'].get()}fps_{self.vars['up_axis'].get()}up_{self.vars['decimation'].get()}decimation.stl"
+            default_name = f"{self.vars['output_name'].get()}_{self.vars['fps'].get()}fps_{self.vars['up_axis'].get()}up_{int(self.vars['decimation'].get()*100)}percent-decimation.stl"
             filepath = filedialog.asksaveasfilename(
                 initialfile=default_name,
                 defaultextension=".stl",
