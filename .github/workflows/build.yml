@@ -33,13 +33,13 @@ jobs:
         - name: Build with PyInstaller (Windows)
           if: runner.os == 'Windows'
           run: |
-            pyinstaller --noconfirm --onedir --windowed --name "T1MESCULPTURES" --icon="assets/app/icon.ico" --collect-all sv_ttk --collect-all pyvista --hidden-import="PIL" --hidden-import="cv2" algorithm/code/app/app.py
+            pyinstaller --noconfirm --onedir --windowed --name "T1MESCULPTURES" --icon="assets/app/icon.ico" --add-data "assets/app/icon.ico;assets/app" --collect-all sv_ttk --collect-all pyvista --hidden-import="PIL" --hidden-import="cv2" algorithm/code/app/app.py
 
         # --- MAC BUILD STEP ---
         - name: Build with PyInstaller (macOS)
           if: runner.os == 'macOS'
           run: |
-            pyinstaller --noconfirm --onedir --windowed --name "T1MESCULPTURES" --icon="assets/app/icon.icns" --collect-all sv_ttk --collect-all pyvista --hidden-import="PIL" --hidden-import="cv2" algorithm/code/app/app.py
+            pyinstaller --noconfirm --onedir --windowed --name "T1MESCULPTURES" --icon="assets/app/icon.icns" --add-data "assets/app/icon.icns:assets/app" --collect-all sv_ttk --collect-all pyvista --hidden-import="PIL" --hidden-import="cv2" algorithm/code/app/app.py
 
         # --- UPLOAD ARTIFACTS (UPDATED TO V4) ---
         - name: Upload Build Artifact

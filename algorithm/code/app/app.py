@@ -19,6 +19,18 @@ import volume_processor
 import mesh_processor
 import app_utils
 
+# Helper Function for Icon Import
+
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 class TextLogger:
     """A helper class to redirect stdout to a Tkinter Text widget."""
     def __init__(self, text_widget):
@@ -85,6 +97,20 @@ class T1mesculpturesApp(tk.Tk):
         
         # Set initial state for dynamic widgets
         self.update_smoothing_controls()
+
+        # --- Icon Setup ---
+        # We need to distinguish between Windows (.ico) and Mac (.icns/png)
+        try:
+            if os.name == 'nt': # Windows
+                # Point to where we WILL bundle the file in the build step
+                self.iconbitmap(resource_path(os.path.join("assets/app", "icon.ico")))
+            else: # Mac/Linux
+                # Mac is tricky with window icons in Tkinter, but we try standard photoimage
+                # Note: Tkinter on Mac often ignores this for the dock, but it's good practice
+                # We reuse the .icns file if possible, or you might need a .png version
+                pass 
+        except Exception as e:
+            print(f"Warning: Could not load window icon: {e}")
 
     def create_controls_widgets(self):
         """Populates the left-hand controls panel."""
