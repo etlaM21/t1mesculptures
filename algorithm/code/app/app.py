@@ -671,10 +671,11 @@ class T1mesculpturesApp(tk.Tk):
             
             # --- Get persistent cache directory for this project ---
             project_cache_dir = app_utils.get_project_cache_dir(params['path'])
-            print(f"Using project cache: {project_cache_dir}")
+            # print(f"Using project cache: {project_cache_dir}")
+            print(f"Project cache at {project_cache_dir} is currently disabled.")
             
-            volume_cache_path = os.path.join(project_cache_dir, "smoothed_volume.npy")
-            self.raw_mesh_cache_path = os.path.join(project_cache_dir, "raw_mesh.ply")
+            volume_cache_path = "" # os.path.join(project_cache_dir, "smoothed_volume.npy")
+            self.raw_mesh_cache_path = "" # os.path.join(project_cache_dir, "raw_mesh.ply")
             
             # --- STAGE 1 (Fast, no cache) ---
             if not self.frames_list:
@@ -698,11 +699,11 @@ class T1mesculpturesApp(tk.Tk):
                 smoothed_volume = volume_processor.smooth_volume(
                     rescaled_volume, params['smooth_method'], **params['smooth_kwargs']
                 )
-                if smoothed_volume is not None:
-                    np.save(volume_cache_path, smoothed_volume)
-                    print(f"Saved volume to cache: {volume_cache_path}")
-                else:
-                    raise ValueError("Volume processing failed.")
+                # if smoothed_volume is not None:
+                    # np.save(volume_cache_path, smoothed_volume)
+                    # print(f"Saved volume to cache: {volume_cache_path}")
+                # else:
+                    # raise ValueError("Volume processing failed.")
                 
             vertices = None
             faces = None
@@ -730,8 +731,8 @@ class T1mesculpturesApp(tk.Tk):
                 if vertices is not None and faces is not None:
                     # Save the raw, potentially repaired mesh to cache
                     raw_surface = pv.PolyData(vertices.astype(np.float32), np.hstack((np.full((faces.shape[0], 1), 3), faces)))
-                    raw_surface.save(self.raw_mesh_cache_path)
-                    print(f"Saved raw mesh to cache.")
+                    # raw_surface.save(self.raw_mesh_cache_path)
+                    # print(f"Saved raw mesh to cache.")
                 else:
                     # Mesh extraction failed
                     raise ValueError("Mesh extraction failed.")
