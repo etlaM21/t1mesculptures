@@ -10,10 +10,10 @@ OpenCV, Numpy and scikit-image are the libraries primarily used in this Python i
 
 ## scikit-image marching cubes
 
-![test animation](../img/testanimation_01.gif)
+![test animation](../assets/readme/testanimation_01.gif)
 
 To first test the feasibility of the algorithm, the [standard scikit-image implemenation of marching cubes](https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.marching_cubes) was used.
 
 This results in a [decent model](./marchingcube_01.stl). The only downside to this is the blocky output. There is no smoothing between layers.
 
-![scikit-image result](./marchingcubes_01.png)
+![scikit-image result](./assets/marchingcubes_01.png)

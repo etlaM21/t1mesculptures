@@ -1,4 +1,0 @@
-pip install cv2
-pip install numpy
-pip install scipy.spatial
-pip install skimage.measure

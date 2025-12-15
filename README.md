@@ -7,7 +7,7 @@ While we have limited time to explain space, time itself is forever as endless a
 
 ## Project Website showing my T1MESCULPTURES: [t1mesculptures.maltehillebrand.de](https://t1mesculptures.maltehillebrand.de/)
 
-![rendered sculpture genesis](./img/GENESIS_Showcase_01.png)
+![rendered sculpture genesis](./assets/readme/GENESIS_Showcase_01.png)
 
 Humans have been trying to conserve thoughts, art and history for as long as we exists, cave paintings, books and Kodak Moments® were all created to hold on to what has passed, but none of them actually display time _passing_.  
 It's the context, a fading Polaroid, our inability to decipher symbols on the walls of ancient temples or photoplay music over old movies that show how time is passing. And while videos come close to depict movement in time, they are still just pictures piled on top of each other.
@@ -22,7 +22,7 @@ With TKinter I created a simple GUI to process frames of a 2D animation, threshh
 
 You can find the current implementation under [algorithm/code/app](./algorithm/code/app).
 
-![rendered sculpture genesis](./img/App_Screenshot.png)
+![rendered sculpture genesis](./assets/readme/App_Screenshot.png)
 
 ### How to create your own T1MESCULPTURE
 
@@ -52,7 +52,7 @@ You can find the current implementation under [algorithm/code/app](./algorithm/c
 - Press 'Save Final Mesh' to save your T1MESCULPTURE as an .stl object.
 
 
-![rendered sculpture SCARRED](./img/scarred_Showcase_01.png)
+![rendered sculpture SCARRED](./assets/readme/scarred_Showcase_01.png)
 
 ## _Turning 2D video into 3D sculptures by using time as the third axis._
 
@@ -60,7 +60,7 @@ By using the movement between frames of a 2D video, the temporal dimension, as a
 
 The difference between these sculptures and a simple 2D video in terms of their depiction of time is the interpolation between the frames. It enables us to accurately and precisely visualize the how time is passing, only limited by the quality of the algorithm and the size the sculpture will have in relation to the amount of time it depicts, as time becomes space.
 
-![animation](./img/ezgif-4-23505d7eae.gif)
+![animation](./assets/readme/ezgif-4-23505d7eae.gif)
 
 ## _The approach._
 
@@ -72,7 +72,7 @@ I'm using After Effects to create animations and export them as individual frame
 Points, describing the shape(s) in each frame of the animation, are then connected between frames.  
 Next, each frame is translated along the third axis in space. The points become the connected vertices and the connections become edges, both describing the 3D mesh.  
 At last, I am using Blender to build faces of the mesh and ensure the 3D object is a manifold, so that it is ready to be 3D printed.
-![top down animation](./img/ezgif-4-820052d9f6.gif)
+![top down animation](./assets/readme/ezgif-4-820052d9f6.gif)
 
 ### Find out more about the algorithm of my first approach here: [Origin To Destination Approach](./algorithm/Origin%20To%20Destination%20Approach.md)
 
@@ -80,7 +80,7 @@ At last, I am using Blender to build faces of the mesh and ensure the 3D object 
 
 All approaches are tested with the following animation as it covers all edge case: circles, corners, inner holes and combination / separation of shapes.
 
-![test animation](./img/testanimation_01.gif)
+![test animation](./assets/readme/testanimation_01.gif)
 
 ### Read more about the current implementation: [algorithm/README.md](./algorithm/README.md)
 
@@ -95,167 +95,5 @@ A fixed height for a single "step" (1 second in time) is derived from the longes
 
 So far, this is in no way "logical". It's simply aesthically pleasing and still provides a rule: Eyer angle below 45 degrees means pixel(s) are "moving" faster than 1 second per longest side.
 
-![test height](./img/renderheight.png)
+![test height](./assets/readme/renderheight.png)
 _How the test animation is scaled as a sculpture_
-
-## _Time as an artistic medium_
-
-**Approaching time and space as eachother.**
-
-- TIME becomes SPACE / SPACE becomes TIME
-
-**_Interesting dynamic:_ Create a time sculpture and then shape it properly afterwards to convey a certain feeling (how time felt), then translate it back into an animation.**
-
-**Rethinking what time and space mean**
-
-1. Shaping time to create a space and shping space to create time (in form of an animation)
-   - Easy to use tool
-     - Two modes: time to space & space to time
-     - Mesh optimizer
-     - Previews
-2. Seeing space as time and time as space
-   - Rethinking time: Getting a sense of its scale
-   - Rethinking space: How a 3D object will look as 2D slices
-   - Restriction: Using time to create space and vice-versa
-
-**Evaluating users**
-
-- interviews
-- comparing artworks created
-
-**Talk to experts**
-
-- sociology professors
-- psychlogy professors
-- therapeutic / behavorial professors
-
-### Research Issue
-
-1. Synchronisation: Gleichzeitigkeit und "gleichortigkeit" führt zur _Desynchronation_; Fomo, Überförderung, Unsicherheit.
-     - _Kann die Restriktion auf das Arbeiten mit "einer Zeit" zur Resynchronisation führen?_
-2. Welche Implikation hat das kulturelle Zeitverstädnis auf die künstlerische Arbeit?
-3. Wie verändert sich künstlerisches Arbeiten, wenn eine Transferleistung (Zeit zu Raum, Raum zu Zeit) im Urpsrung des Prozesses steht? -> Was passiert, wenn das Resultat einer Arbeit abhängig von Vorstellung der Implikationen der Vorarbeit ist? (anderes Beispiel: Creative Coding)
-4. Können Zeitskulpturen eine plastische Fortführung des Impressionismus sein?
-    - _Falls nein:_ Wo ordnen sie sich ein zwischen Expressionismus und Konstruktivismus?
-
-
-### Other art forms shaping the understanding of time
-
-#### Data Visualization
-
-- Animation curves
-
-![AE curves](img/speedgraph.jpg)
-
-- Hartmut Rosa schrumpfende Weltkarte
-
-![Rosa Karte](img/rosa.png)
-
-- Charles Joseph Minard,  Napoleon’s disastrous invasion of Russia in 1812
-
-![Minard Map](img/Minard.jpg)
-
-### Art
-
-- Jean Morin, "Memento Mori", first half of 17th century
-
-![Morin](img/morin.jpg)
-
-- Evert Collier, "Vanitas, Still Life with Books and Manuscripts and a Skull", 1663
-
-![Collier](img/collier.jpg)
-
-- Piedra del Sol, 1502 - 1520 (_sun calendar_)
-
-![Piedra del Sol](img/piedradelsol.JPG)
-
-- Wassily Kandinsky, "Yellow — Red — Blue", 1925 (_idea of motion on a canvas_)
-
-![Kandinsky](img/kandinsky.webp)
-
-- Umberto Boccioni, "Unique Forms of Continuity in Space", 1913 
-
-![Boccioni](img/boccioni.webp)
-
-- Jackson Pollock, "Number 34", 1949 (_action painting_)
-
-![Pollock](img/pollock.jpeg)
-
-- [Len Lye, "Witch Dance", 1965](https://www.youtube.com/watch?v=QBICitKpYNQ) (_kinetic sculptures_)
-- Edgar Degas, "Three Dancers II", 1898
-
-![Degas](img/degas.jpg)
-
-- Etienne-Jules Marey, multi-exposed Chronophotograph, 1890 College de France
-
-![Marey](img/marey.jpg)
-
-- Eadweard Muybridge, studies of human and animal locomotion. Athlete, Standing Leaps, 1879
-![Muybridge](img/mybridge.png)
-
--> _DIFFERENCE:_ All are implying time by trying to depict movement (or actually moving), none _show_ time!
-
-#### Contemporary Art
-
-- John Salvest, "Newspaper Columns", 1997
-
-![Newspapers](img/newspaper3.jpg)
-
-- John Salvest, "Reliquary", 1991- 
-
-![Reliquary](img/reliquary.jpg)
-
-- Robert Farber, "055", 1981 From A Collaboration with Time-Deterioration Series
-
-![Farber](img/farber.jpg)
-
-- Kellyann Burns, "3:24 PM 8/14/17"
-
-![KellyAnn](img/kellyann.jpg)
-
-- Johanna Burke, "MAKE TIME", 2018
-
-![Burke](img/burke.jpg)
-
-- [Cindy Sherman](https://en.wikipedia.org/wiki/Cindy_Sherman)
-
-![Sherman](img/sherman.jpg)
-
-- Jean-Remy von Matt, ["The Lifetime Sculptures"](https://www.lifetimesculptures.com/), 2023 (?)
-
-![Remy](img/remy.webp)
-
-#### Movies
-
-- [**Memento** by Christopher Nolan](https://en.wikipedia.org/wiki/Memento_(film))
-- [**Inception** by Christopher Nolan](https://en.wikipedia.org/wiki/Inception)
-- [**Tenet** by Christopher Nolan](https://en.wikipedia.org/wiki/Tenet_(film))
-- [**Enter the Void** by Gaspar Noe](https://en.wikipedia.org/wiki/Enter_the_Void)
-- [**In Time** by Andrew Nicool](https://en.wikipedia.org/wiki/In_Time)
-- [**Source Code** by Duncan Jones](https://en.wikipedia.org/wiki/Source_Code)
-- [**Back To The Future** by Robert Zemeckis](https://en.wikipedia.org/wiki/Back_to_the_Future)
-- [**Frequency** by Gregory Hoblit](https://en.wikipedia.org/wiki/Frequency_(2000_film))
-- [**Time Lapse** by Bradles D. King](https://en.wikipedia.org/wiki/Time_Lapse_(film))
-- [**Edge of Tomorrow** by Doug Liman](https://en.wikipedia.org/wiki/Edge_of_Tomorrow)
-- [**Looper** by Rian Johnson](https://en.wikipedia.org/wiki/Looper_(film))
-
-#### Music
-
-- [Moor Mother](https://en.wikipedia.org/wiki/Moor_Mother)
-
----
-## _*TO-DO*_
-
-### Programming
-
-- User Interface
-  - 3D Viewer
-    - [VTK](https://pypi.org/project/vtk/)
-  - 2 tabs: timeview and spaceview
-  - import / export
-  - blender automation (?)
-- Mesh optimazition
-  - [PyMesh](https://pymesh.readthedocs.io/en/latest/)
-
-### Thesis
-

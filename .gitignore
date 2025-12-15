@@ -1,4 +1,5 @@
 *.stl
 
-algorithm/code/_export/*
+sculptures/*
+sculptures/*.png
 !*.aep

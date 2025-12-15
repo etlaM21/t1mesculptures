@@ -2,7 +2,7 @@ This algorithmic approach to detecting corner movement between frames uses an or
 
 OpenCV and Numpy are the libraries primarily used in this Python implementation.
 
-![naming](./img/origin_destination_names.png)
+![naming](./assets/origin_destination_names.png)
 
 The approach compares two frames, **an origin and a destination frame**. The destination is the frame following the origin. When both frames are overlaid, an **intersection occurs where nonzero pixels are shared**. We can assume this, because any frame has to share at least one pixel with the next one – _if there is one_ – in order to form a physically (valid) connection in 3D-space.
 
@@ -17,7 +17,7 @@ Else, calculating a “direction” in which pixel are moving without any other 
 
 To get an idea how pixels are moving between frames, consecutive frames are overlaid and contours are masked. This will lead to pixels _intersecting_, the _inner pixels_, and pixels which _don't intersect_, the _outer pixels_. Both can be extracted for the origin and destination frame.
 
-![naming masks](./img/origin_destination_mask_names.png)
+![naming masks](./assets/origin_destination_mask_names.png)
 
 This information tells us already more about the movement of pixels:
 1.  Pixels on the **_Origin.outer_** contour will need to move to the **_Destination.inner_** contour
@@ -29,7 +29,7 @@ This ensures that _every_ pixel on the destination contour is looked at and migh
 
 _You can see the result of this calculation in the pixel movement here as red lines._
 
-![pixel movement](./img/pixeltravel.png)
+![pixel movement](./assets/pixeltravel.png)
 
 ## Connecting vertices
 
