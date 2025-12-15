@@ -1,5 +1,9 @@
 # T1MESCULPTURES
 
+[![GitHub](https://img.shields.io/badge/GitHub-Repo-181717?logo=github)](https://github.com/etlaM21/t1mesculptures)
+[![Release](https://img.shields.io/github/v/release/etlaM21/t1mesculptures)](https://github.com/etlaM21/t1mesculptures/releases)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/etlaM21/t1mesculptures/build.yml?branch=main)](https://github.com/etlaM21/t1mesculptures/actions)
+
 Time and space are constraint in our universe. Both are universal and impossible to comprehend.  
 While we have limited time to explain space, time itself is forever as endless and mysterious as the universe. Our physical body will always be attached to snippets of time.
 
@@ -25,6 +29,9 @@ You can find the current implementation under [algorithm/code/app](./algorithm/c
 ![rendered sculpture genesis](./assets/readme/App_Screenshot.png)
 
 ### How to create your own T1MESCULPTURE
+
+0. **[Download the latest release](ttps://github.com/etlaM21/t1mesculptures/release) for your operating system: 
+[![Release](https://img.shields.io/github/v/release/etlaM21/t1mesculptures)](https://github.com/etlaM21/t1mesculptures/releases)**
 
 1. **Create a 2D animation using any tool you're comfortable with, in my case after Effects.**
 
