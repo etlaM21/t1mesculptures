@@ -30,7 +30,7 @@ You can find the current implementation under [algorithm/code/app](./algorithm/c
 
 ### How to create your own T1MESCULPTURE
 
-0. **[Download the latest release](ttps://github.com/etlaM21/t1mesculptures/release) for your operating system: 
+0. **[Download the latest release](https://github.com/etlaM21/t1mesculptures/release) for your operating system: 
 [![Release](https://img.shields.io/github/v/release/etlaM21/t1mesculptures)](https://github.com/etlaM21/t1mesculptures/releases)**
 
 1. **Create a 2D animation using any tool you're comfortable with, in my case after Effects.**
