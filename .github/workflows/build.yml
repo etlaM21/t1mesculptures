@@ -68,15 +68,15 @@ jobs:
       - name: Zip Artifacts for Release
         run: |
           # Zip them up nicely so users download 1 file per OS
-          cd windows-build && zip -r ../T1mesculptures-Windows.zip ./* && cd ..
-          cd mac-build && zip -r ../T1mesculptures-macOS.zip ./* && cd ..
+          cd windows-build && zip -r ../T1MESCULPTURES-Windows.zip ./* && cd ..
+          cd mac-build && zip -r ../T1MESCULPTURES-macOS.zip ./* && cd ..
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            T1mesculptures-Windows.zip
-            T1mesculptures-macOS.zip
+            T1MESCULPTURES-Windows.zip
+            T1MESCULPTURES-macOS.zip
           draft: false
           prerelease: false
           generate_release_notes: true
