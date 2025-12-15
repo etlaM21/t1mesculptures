@@ -3,3 +3,5 @@
 sculptures/*
 sculptures/*.png
 !*.aep
+
+dist/
