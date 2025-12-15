@@ -178,11 +178,11 @@ class T1mesculpturesApp(tk.Tk):
 
         def open_link(url): webbrowser.open(url)
 
-        ttk.Button(feedback_frame, text="1. Sculpture Log (Click me!)", style="Accent.TButton", 
+        ttk.Button(feedback_frame, text="Sculpture Log (Click me!)", style="Accent.TButton", 
                    command=lambda: open_link("https://docs.google.com/forms/d/e/1FAIpQLSf55DBjKC6Gz1nBM97sZOVSKBZpGQgTRvrTAs9uypO_03rtew/viewform?usp=dialog")).pack(fill="x", pady=2)
-        ttk.Button(feedback_frame, text="2. Eureka Log", 
+        ttk.Button(feedback_frame, text="Eureka Log", 
                    command=lambda: open_link("https://docs.google.com/forms/d/e/1FAIpQLSdpAtH1LuoQJPaEP8Uz4s7WbqXqRtJkO1Omy2z0hDwEZIcslQ/viewform?usp=preview")).pack(fill="x", pady=2)
-        ttk.Button(feedback_frame, text="3. Translation Plan", 
+        ttk.Button(feedback_frame, text="Translation Plan", 
                    command=lambda: open_link("https://t1mesculptures.maltehillebrand.de/study/translation-plan")).pack(fill="x", pady=2)
         
     def create_output_widgets(self):
