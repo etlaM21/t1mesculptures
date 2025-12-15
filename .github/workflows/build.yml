@@ -1,37 +1,52 @@
-steps:
-    - uses: actions/checkout@v3
+name: Build Application
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-        cache: 'pip'
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
 
-    - name: Install Dependencies
-      run: |
-        # This looks for requirements.txt in the Root, which is correct
-        pip install -r requirements.txt
-        pip install pyinstaller
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+    
+    runs-on: ${{ matrix.os }}
+        
+    steps:
+        - uses: actions/checkout@v3
 
-    # --- WINDOWS BUILD STEP ---
-    - name: Build with PyInstaller (Windows)
-      if: runner.os == 'Windows'
-      run: |
-        # 1. Point --icon to assets/icon.ico (in Root)
-        # 2. Point target script to code/app/app.py
-        pyinstaller --noconfirm --onedir --windowed --name "T1MESCULPTURES" --icon="assets/app/icon.ico" --collect-all sv_ttk --collect-all pyvista --hidden-import="PIL" --hidden-import="cv2" algorithm/code/app/app.py
+        - name: Set up Python
+          uses: actions/setup-python@v4
+          with:
+            python-version: '3.10'
+            cache: 'pip'
 
-    # --- MAC BUILD STEP ---
-    - name: Build with PyInstaller (macOS)
-      if: runner.os == 'macOS'
-      run: |
-        # 1. Point --icon to assets/icon.icns (in Root)
-        # 2. Point target script to code/app/app.py
-        pyinstaller --noconfirm --onedir --windowed --name "T1MESCULPTURES" --icon="assets/app/icon.icns" --collect-all sv_ttk --collect-all pyvista --hidden-import="PIL" --hidden-import="cv2" algorithm/code/app/app.py
+        - name: Install Dependencies
+          run: |
+            # This looks for requirements.txt in the Root, which is correct
+            pip install -r requirements.txt
+            pip install pyinstaller
 
-    # --- UPLOAD ARTIFACTS ---
-    - name: Upload Build Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: T1MESCULPTURES-${{ runner.os }}
-        path: dist/T1MESCULPTURES*
+        # --- WINDOWS BUILD STEP ---
+        - name: Build with PyInstaller (Windows)
+          if: runner.os == 'Windows'
+          run: |
+            # 1. Point --icon to assets/icon.ico (in Root)
+            # 2. Point target script to code/app/app.py
+            pyinstaller --noconfirm --onedir --windowed --name "T1MESCULPTURES" --icon="assets/app/icon.ico" --collect-all sv_ttk --collect-all pyvista --hidden-import="PIL" --hidden-import="cv2" algorithm/code/app/app.py
+
+        # --- MAC BUILD STEP ---
+        - name: Build with PyInstaller (macOS)
+          if: runner.os == 'macOS'
+          run: |
+            # 1. Point --icon to assets/icon.icns (in Root)
+            # 2. Point target script to code/app/app.py
+            pyinstaller --noconfirm --onedir --windowed --name "T1MESCULPTURES" --icon="assets/app/icon.icns" --collect-all sv_ttk --collect-all pyvista --hidden-import="PIL" --hidden-import="cv2" algorithm/code/app/app.py
+
+        # --- UPLOAD ARTIFACTS ---
+        - name: Upload Build Artifact
+          uses: actions/upload-artifact@v3
+          with:
+            name: T1MESCULPTURES-${{ runner.os }}
+            path: dist/T1MESCULPTURES*
