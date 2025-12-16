@@ -4,6 +4,10 @@
 [![Release](https://img.shields.io/github/v/release/etlaM21/t1mesculptures)](https://github.com/etlaM21/t1mesculptures/releases)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/etlaM21/t1mesculptures/build.yml?branch=main)](https://github.com/etlaM21/t1mesculptures/actions)
 
+> [!IMPORTANT]
+> Participating in the study?
+> Read this document first and then head over to the [study guide](study.md).
+
 Time and space are constraint in our universe. Both are universal and impossible to comprehend.  
 While we have limited time to explain space, time itself is forever as endless and mysterious as the universe. Our physical body will always be attached to snippets of time.
 
