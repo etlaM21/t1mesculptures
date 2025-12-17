@@ -10,15 +10,16 @@ I hope you will feel the hidden qualities of time when working on your T1MESCULP
 
 This guide is meant to help you navigate the study and explain your role in all of it.
 
-* [Timeline](#timeline)
-    + [1. Diary Study](#1-diary-study)
-        - [Goal](#goal)
-        - [Surveys / Logs](#surveys-logs)
-            * [Sculpture Log _(mandatory after each try)_](#sculpture-log-mandatory-after-each-try)
-            * [Eureka Log _(nice to have)_](#eureka-log-nice-to-have)
-            * [Translation Plan _(an offer from me)_](#translation-plan-an-offer-from-me)
-    + [2. Interview](#2-interview)
-* [Reward](#reward)
+- [For Study Participants](#for-study-participants)
+  - [Timeline](#timeline)
+    - [1. Diary Study](#1-diary-study)
+      - [Goal](#goal)
+      - [Surveys / Logs](#surveys--logs)
+        - [Sculpture Log _(mandatory after each try)_](#sculpture-log-mandatory-after-each-try)
+        - [Eureka Log _(nice to have)_](#eureka-log-nice-to-have)
+        - [Translation Plan _(an offer from me)_](#translation-plan-an-offer-from-me)
+    - [2. Interview](#2-interview)
+  - [Reward](#reward)
 
 
 ## Timeline
@@ -73,7 +74,7 @@ The sculpture log is your feedback loop **after each try**.
 What went wrong, how did it feel, etc. But not every field of the form is mandatory.
 
 You can find the sculpture log here:
-https://docs.google.com/forms/d/e/1FAIpQLSf55DBjKC6Gz1nBM97sZOVSKBZpGQgTRvrTAs9uypO_03rtew/
+https://docs.google.com/forms/d/e/1FAIpQLSf55DBjKC6Gz1nBM97sZOVSKBZpGQgTRvrTAs9uypO_03rtew/viewform?usp=header
 
 > [!TIP]
 > Feel free to use bullet points, abbreviate, or find other ways to not have the log feel like a burden. That is not the goal and I don't want to disrupt your flow.
@@ -86,8 +87,8 @@ _Something finally "clicked", the resulting sculpture is in no way how you imagi
 
 I would love to hear about it. If you find the time, fill out the short survey.
 
-You can find the eureka log here:
-https://docs.google.com/forms/d/e/1FAIpQLSdpAtH1LuoQJPaEP8Uz4s7WbqXqRtJkO1Omy2z0hDwEZIcslQ/
+You can find the Eureka log here:
+https://docs.google.com/forms/d/e/1FAIpQLSdpAtH1LuoQJPaEP8Uz4s7WbqXqRtJkO1Omy2z0hDwEZIcslQ/viewform?usp=header
 
 ##### Translation Plan _(an offer from me)_
 
