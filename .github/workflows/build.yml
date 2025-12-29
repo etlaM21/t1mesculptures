@@ -34,13 +34,22 @@ jobs:
           if: runner.os == 'Windows'
           run: |
             pyinstaller --noconfirm --onedir --windowed --name "T1MESCULPTURES" --icon="assets/app/icon.ico" --add-data "assets/app/icon.ico;assets/app" --collect-all sv_ttk --collect-all pyvista --hidden-import="PIL" --hidden-import="cv2" algorithm/code/app/app.py
-
+        
         # --- MAC BUILD STEP ---
         - name: Build with PyInstaller (macOS)
           if: runner.os == 'macOS'
           run: |
+            # 1. Build the App
             pyinstaller --noconfirm --onedir --windowed --name "T1MESCULPTURES" --icon="assets/app/icon.icns" --add-data "assets/app/icon.icns:assets/app" --collect-all sv_ttk --collect-all pyvista --hidden-import="PIL" --hidden-import="cv2" algorithm/code/app/app.py
+            
+            # 2. Force Executable Permissions (Crucial Fix!)
+            # This ensures the inner binary is definitely marked as a program
+            chmod +x dist/T1MESCULPTURES.app/Contents/MacOS/T1MESCULPTURES
 
+            # 3. Ad-hoc Code Signing
+            # The '-' means "sign with no identity" (ad-hoc), which is enough to fix "Damaged App" errors
+            codesign --force --deep --sign - dist/T1MESCULPTURES.app
+            
         # --- UPLOAD ARTIFACTS (UPDATED TO V4) ---
         - name: Upload Build Artifact
           uses: actions/upload-artifact@v4
@@ -69,14 +78,15 @@ jobs:
         run: |
           # Zip them up nicely so users download 1 file per OS
           cd windows-build && zip -r ../T1MESCULPTURES-Windows.zip ./* && cd ..
-          cd mac-build && zip -r ../T1MESCULPTURES-macOS.zip ./* && cd ..
+          # Use tar.gz for Mac to preserve the +x permission bit
+          cd mac-build && tar -czf ../T1mesculptures-macOS.tar.gz ./* && cd ..
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             T1MESCULPTURES-Windows.zip
-            T1MESCULPTURES-macOS.zip
+            T1mesculptures-macOS.tar.gz
           draft: false
           prerelease: false
           generate_release_notes: true
