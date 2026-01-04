@@ -50,6 +50,7 @@ class T1mesculpturesApp(tk.Tk):
     def __init__(self):
         super().__init__()
 
+
         # --- Basic App Setup ---
         self.title("T1MESCULPTURES")
         self.geometry("1080x825")
@@ -304,7 +305,8 @@ class T1mesculpturesApp(tk.Tk):
         sys.stderr = logger
         
         print("Welcome to T1MESCULPTURES!")
-        print(f"Persistent cache directory at {app_utils.get_app_cache_dir()}")
+        print(f"DEBUG: Running with NumPy version: {np.__version__}")
+        # print(f"Persistent cache directory at {app_utils.get_app_cache_dir()}")
 
     # --- Helper Functions ---
     
@@ -756,7 +758,12 @@ class T1mesculpturesApp(tk.Tk):
                 
                 if vertices is not None and faces is not None:
                     # Save the raw, potentially repaired mesh to cache
-                    raw_surface = pv.PolyData(vertices.astype(np.float32), np.hstack((np.full((faces.shape[0], 1), 3), faces)))
+                    # raw_surface = pv.PolyData(vertices.astype(np.float32), np.hstack((np.full((faces.shape[0], 1), 3), faces)))
+                    # Force faces and padding to be integers (int32 or int)
+                    faces_int = faces.astype(int)
+                    padding = np.full((faces.shape[0], 1), 3, dtype=int)
+                    
+                    raw_surface = pv.PolyData(vertices.astype(np.float32), np.hstack((padding, faces_int)))
                     # raw_surface.save(self.raw_mesh_cache_path)
                     # print(f"Saved raw mesh to cache.")
                 else:

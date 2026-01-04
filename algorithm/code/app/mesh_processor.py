@@ -12,7 +12,13 @@ def extract_mesh(volume):
 
 def optimize_mesh(vertices, faces, reduction_factor):
     # --- Create the PyVista mesh object ---
-    faces_pyvista = np.hstack((np.full((faces.shape[0], 1), 3), faces))
+    # faces_pyvista = np.hstack((np.full((faces.shape[0], 1), 3), faces))
+    # smooth_surface = pv.PolyData(vertices.astype(np.float32), faces_pyvista)
+
+    faces_int = faces.astype(int)
+    padding = np.full((faces.shape[0], 1), 3, dtype=int)
+    faces_pyvista = np.hstack((padding, faces_int))
+    
     smooth_surface = pv.PolyData(vertices.astype(np.float32), faces_pyvista)
 
     # --- Perform decimation logic ---
