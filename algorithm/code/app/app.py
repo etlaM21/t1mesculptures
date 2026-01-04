@@ -10,6 +10,8 @@ import sys # For redirecting stdout
 # For video preview
 from PIL import Image, ImageTk  
 import cv2 as cv
+# For 3D Preview
+import multiprocessing
 # For the surveys
 import webbrowser
 
@@ -18,6 +20,23 @@ import data_loader
 import volume_processor
 import mesh_processor
 import app_utils
+
+# --- Multiprocessing Worker Function ---
+def preview_worker(mesh_data):
+    """
+    Runs in a separate process. 
+    Receives mesh data, creates a window, and blocks until closed.
+    """
+    import pyvista as pv
+    
+    # Setup the plotter
+    p = pv.Plotter(window_size=[800, 600], title="3D Preview")
+    p.add_mesh(mesh_data, show_edges=True, color="white")
+    p.add_axes()
+    p.view_isometric()
+    
+    # This is safe now because we are in our own process!
+    p.show()
 
 # Helper Function for Icon Import
 
@@ -920,12 +939,13 @@ class T1mesculpturesApp(tk.Tk):
         final_surface = self.get_current_mesh() 
         
         if final_surface:
-            print("Displaying 3D preview...")
-            plotter = pv.Plotter()
-            plotter.add_mesh(final_surface, show_edges=True)
-            plotter.add_axes() # Useful to see the orientation
-            plotter.show()
-            print("Preview closed.")
+            print("Launching 3D preview in separate process...")
+            
+            # Create the process, passing the mesh data
+            p = multiprocessing.Process(target=preview_worker, args=(final_surface,))
+            p.start()
+            
+            # We don't join() (wait) because we want the main app to keep working!
 
     def save_final_mesh(self):
         """Run optimization and open a 'Save As' dialog."""
@@ -951,6 +971,12 @@ class T1mesculpturesApp(tk.Tk):
 
 
 if __name__ == "__main__":
+    # REQUIRED for PyInstaller + Multiprocessing
+    import multiprocessing
+    
+    multiprocessing.freeze_support()
+    
+    # Standard App Startup
     app = T1mesculpturesApp()
     
     sv_ttk.set_theme("dark")  # Set the theme
