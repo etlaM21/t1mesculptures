@@ -7,6 +7,8 @@
 > [!IMPORTANT]
 > Participating in the study?
 > Read this document first and then head over to the [study guide](study.md).
+> 
+> Trouble with the installation and running the program? Read detailled instructions [here](#how-to-create-your-own-t1mesculpture).
 
 Time and space are constraint in our universe. Both are universal and impossible to comprehend.  
 While we have limited time to explain space, time itself is forever as endless and mysterious as the universe. Our physical body will always be attached to snippets of time.
