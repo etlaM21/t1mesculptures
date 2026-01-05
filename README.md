@@ -37,6 +37,58 @@ You can find the current implementation under [algorithm/code/app](./algorithm/c
 0. **[Download the latest release](https://github.com/etlaM21/t1mesculptures/releases) for your operating system: 
 [![Release](https://img.shields.io/github/v/release/etlaM21/t1mesculptures)](https://github.com/etlaM21/t1mesculptures/releases)**
 
+---
+
+#### **Windows Installation**
+
+1. **Unzip the file:**
+   - Locate the downloaded `.zip` file.
+   - Right-click it and select **Extract All...**
+   - Click **Extract**.
+   - *⚠️ Important:* You must extract the folder first. Do not run the app directly from inside the ZIP file.
+
+2. **Run the App:**
+   - Open the new folder you just created.
+   - Double-click `T1MESCULPTURES.exe`.
+
+##### **Troubleshooting Windows**
+> **"Windows protected your PC"**
+> >
+> If you see a blue window saying Microsoft Defender prevented the app from starting:
+> 1. Click **More Info** (small text on the left).
+> 2. Click the **Run Anyway** button.
+> *(This warning appears because this is a custom research app and not a commercial product from the Microsoft Store.)*
+
+---
+
+####  **macOS Instructions**
+
+> [!WARNING]
+> Because this app is not on the App Store, **macOS will block it by default to protect you**. You must follow these specific steps to open it for the first time.
+
+##### **Method 1: The "Right-Click" Trick (Recommended)**
+This is the fastest way to bypass the security warning.
+
+1. **Unzip** the file (double-click `T1mesculptures-macOS.zip`).
+2. **Right-Click** (or hold `Control` on your keyboard and click) the `T1mesculptures` app icon.
+3. Select **Open** from the menu that pops up.
+4. A dialog box will appear warning you about an "unidentified developer".
+5. Click **Open**.
+
+*Note: You only need to do this once. Next time, you can just double-click it.*
+
+##### **Method 2: System Settings**
+If Method 1 does not work:
+
+1. Double-click the app to try and open it. Click **OK** when the warning appears.
+2. Open your Mac **System Settings** (or System Preferences).
+3. Go to **Privacy & Security**.
+4. Scroll down to the **Security** section.
+5. Look for a message saying *"T1mesculptures was blocked..."*
+6. Click the **Open Anyway** button.
+
+---
+
 1. **Create a 2D animation using any tool you're comfortable with, in my case after Effects.**
 
 - Make sure the animation is exported as individual frames, not a video format.
