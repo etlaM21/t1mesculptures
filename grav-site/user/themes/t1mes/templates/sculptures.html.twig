@@ -4,9 +4,9 @@
 
 <main>
     <header>
-        <h1>t1mesculptures</h1>
-        <h2 style="align-self: center; text-align: center">shapes of time passed</h2>
-        <h1 style="align-self: end; text-align: right">etlaM</h1>
+        <h2 id="t1me-clock"></h2>
+        <h1 style="align-self: center; text-align: center">T1MESCULPTURES</h1>
+        <h2 style="align-self: end; text-align: right">etlaM</h2>
     </header>
     {# Loop through all child pages (projects) #}
     {% for p in page.collection %}
@@ -38,4 +38,29 @@
         {% endif %}
     {% endfor %}
 </main>
+<script>
+    // Unix Timestamp: Oct 27, 2025 @ 3:09pm (UTC) - 1st T1MESCULPTURE
+    const startTimestamp = 1761577740;
+    
+    const displayElement = document.getElementById('t1me-clock');
+
+    function updateCounter() {
+        // Get current Unix time in seconds (divide by 1000 and floor)
+        const currentTimestamp = Math.floor(Date.now() / 1000);
+        
+        // Calculate seconds elapsed
+        const secondsElapsed = currentTimestamp - startTimestamp;
+
+        // Format numbers with commas for readability (e.g., 1,234,567)
+        const formattedSeconds = secondsElapsed.toLocaleString();
+
+        displayElement.innerText = `${formattedSeconds}`;
+    }
+
+    // Update every 1000ms (1 second)
+    setInterval(updateCounter, 1000);
+
+    // Initialize immediately
+    updateCounter();
+</script>
 {% endblock %}
