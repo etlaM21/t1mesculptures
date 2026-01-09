@@ -22,15 +22,22 @@ import mesh_processor
 import app_utils
 
 # --- Multiprocessing Worker Function (because Preview is in a new window) ---
-def preview_worker(mesh_data, mode="smooth"):
+def preview_worker(mesh_data, mode="smooth", name="T1MESCULPTURE"):
     """
     Runs in a separate process. 
     mode: "smooth" (Smooth + Split Edges) or "edges" (Flat + Visible Lines)
     """
     import pyvista as pv
     
-    # Setup the plotter
-    p = pv.Plotter(window_size=[800, 600], title=f"3D Preview - {mode.title()} Mode")
+    # Construct the title
+    window_title = f"3D Preview: {name} ({mode.title()} Mode)"
+    
+    # Setup plotter (Do NOT pass background here to avoid crash)
+    p = pv.Plotter(window_size=[800, 600], title=window_title)
+    
+    # Set background safely
+    p.set_background('#4c4c4c')
+
     
     if mode == "smooth":
         # Smooth shading with split sharp edges (looks like a refined 3D render)
@@ -971,10 +978,16 @@ class T1mesculpturesApp(tk.Tk):
         final_surface = self.get_current_mesh() 
         
         if final_surface:
-            print(f"Launching 3D preview ({mode}) in separate process...")
+            sculpture_name = self.vars["output_name"].get()
             
-            # Create the process, passing the mesh data AND the mode
-            p = multiprocessing.Process(target=preview_worker, args=(final_surface, mode))
+            print(f"Launching 3D preview for '{sculpture_name}' ({mode})...")
+            
+            # Create the process, passing the mesh data, mode and name
+            p = multiprocessing.Process(
+                target=preview_worker, 
+                args=(final_surface, mode, sculpture_name)
+            )
+            
             p.start()
             
             # We don't join() (wait) because we want the main app to keep working!
