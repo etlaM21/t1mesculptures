@@ -21,17 +21,25 @@ import volume_processor
 import mesh_processor
 import app_utils
 
-# --- Multiprocessing Worker Function ---
-def preview_worker(mesh_data):
+# --- Multiprocessing Worker Function (because Preview is in a new window) ---
+def preview_worker(mesh_data, mode="smooth"):
     """
     Runs in a separate process. 
-    Receives mesh data, creates a window, and blocks until closed.
+    mode: "smooth" (Smooth + Split Edges) or "edges" (Flat + Visible Lines)
     """
     import pyvista as pv
     
     # Setup the plotter
-    p = pv.Plotter(window_size=[800, 600], title="3D Preview")
-    p.add_mesh(mesh_data, show_edges=True, color="white")
+    p = pv.Plotter(window_size=[800, 600], title=f"3D Preview - {mode.title()} Mode")
+    
+    if mode == "smooth":
+        # Smooth shading with split sharp edges (looks like a refined 3D render)
+        # 
+        p.add_mesh(mesh_data, color="white", smooth_shading=True, split_sharp_edges=True, show_edges=False)
+    else:
+        # Flat shading with visible wireframe edges (good for inspecting geometry)
+        p.add_mesh(mesh_data, color="white", smooth_shading=False, show_edges=True, edge_color="black",line_width=1.0)
+
     p.add_axes()
     p.view_isometric()
     
@@ -273,8 +281,30 @@ class T1mesculpturesApp(tk.Tk):
         # 3D Preview Tab
         self.preview_tab = ttk.Frame(self.notebook, padding=10)
         self.notebook.add(self.preview_tab, text="3D Preview")
-        self.preview_button = ttk.Button(self.preview_tab, text="Show 3D Preview (in new window)", state="disabled", command=self.show_3d_preview)
-        self.preview_button.pack(expand=True, anchor="center")
+        
+        # Container to center buttons
+        btn_container = ttk.Frame(self.preview_tab)
+        btn_container.pack(expand=True, anchor="center")
+
+        # Button 1: Smooth (Accent Color)
+        self.preview_button = ttk.Button(
+            btn_container, 
+            text="Show 3D Preview (opens in new window)", 
+            state="disabled", 
+            style="Accent.TButton", # Blue/Highlighted
+            command=lambda: self.show_3d_preview(mode="smooth")
+        )
+        self.preview_button.pack(fill="x", pady=5)
+
+        # Button 2: Edges (Default/Gray Color)
+        self.preview_edges_button = ttk.Button(
+            btn_container, 
+            text="Show 3D Preview with Edges (opens in new window)", 
+            state="disabled", 
+            # No style argument = Default Gray in Sun Valley Theme
+            command=lambda: self.show_3d_preview(mode="edges")
+        )
+        self.preview_edges_button.pack(fill="x", pady=5)
 
         # --- 2. Stats Frame ---
         stats_frame = ttk.LabelFrame(frame, text="Stats", padding=10)
@@ -691,6 +721,7 @@ class T1mesculpturesApp(tk.Tk):
         
         # Reset output buttons
         self.preview_button.config(state="disabled")
+        self.preview_edges_button.config(state="disabled")
         self.save_button.config(state="disabled")
         
         # Get a snapshot of all parameters
@@ -823,6 +854,7 @@ class T1mesculpturesApp(tk.Tk):
         print("Updating GUI...")
         self.generate_button.config(state="normal", text="GENERATE MESH")
         self.preview_button.config(state="normal")
+        self.preview_edges_button.config(state="normal")
         self.save_button.config(state="normal")
 
         # --- Store the final result ---
@@ -933,16 +965,16 @@ class T1mesculpturesApp(tk.Tk):
             return None
         return self.get_rotated_mesh(self.final_mesh_result)
 
-    def show_3d_preview(self):
+    def show_3d_preview(self, mode="smooth"):
         """Run optimization and show the PyVista plotter."""
         # Use the helper to get the potentially rotated mesh
         final_surface = self.get_current_mesh() 
         
         if final_surface:
-            print("Launching 3D preview in separate process...")
+            print(f"Launching 3D preview ({mode}) in separate process...")
             
-            # Create the process, passing the mesh data
-            p = multiprocessing.Process(target=preview_worker, args=(final_surface,))
+            # Create the process, passing the mesh data AND the mode
+            p = multiprocessing.Process(target=preview_worker, args=(final_surface, mode))
             p.start()
             
             # We don't join() (wait) because we want the main app to keep working!
