@@ -80,11 +80,11 @@ main {
             z-index: 100;
             text-align: right;
             bottom: 0;
-            right: 0;
+            right: 5px;
             &:first-of-type {
                 text-align: left;
                 top: 0;
-                left: 0;
+                left: 5px;
             }
         }
         .hover-media {
