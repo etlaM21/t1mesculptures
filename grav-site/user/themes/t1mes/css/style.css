@@ -142,3 +142,65 @@ main {
         }
     }
 }
+
+
+/* TEXT SWAP TRANSITION EFFECT ON TIMER */
+
+#timer {
+    overflow: hidden;
+    height: 2em;
+    line-height: 1;
+    position: relative;
+}
+
+#timer h2 > span{
+    display: inline-block;
+    transition-duration: 0.05s; 
+    transition-property: transform;
+}
+
+#timer h2:nth-child(1) > span {
+    transform: translateY(0%);
+    transition-delay: calc(0s + (var(--i) * 0.05s)); 
+    transition-timing-function: ease-out;
+}
+
+#timer h2:nth-child(2) > span {
+    transform: translateY(100%);
+    transition-delay: calc(var(--i) * 0.05s);
+    transition-timing-function: ease-in;
+}
+
+#timer:hover h2:nth-child(1) > span {
+    transform: translateY(-100%);
+    transition-delay: calc(var(--i) * 0.05s);
+    transition-timing-function: ease-in;
+}
+
+#timer:hover h2:nth-child(2) > span {
+    transform: translateY(0%);
+    transition-delay: calc(0.33s + (var(--i) * 0.05s));
+    transition-timing-function: ease-out;
+}
+
+#timer h2:nth-child(1){
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+#timer h2:nth-child(1) > span{
+    transform: translateY(0);
+}
+
+#timer h2:nth-child(2) > span{
+    transform: translateY(100%);
+}
+
+#timer:hover h2:nth-child(1) > span{
+    transform: translateY(-100%);
+}
+
+#timer:hover h2:nth-child(2) > span{
+    transform: translateY(0%);
+}

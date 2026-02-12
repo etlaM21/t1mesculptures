@@ -4,7 +4,17 @@
 
 <main>
     <header>
-        <h2 id="t1me-clock"></h2>
+        <div id="timer">
+            <h2 id="t1me-clock">
+                <span>9</span><span>.</span><span>3</span><span>5</span><span>2</span><span>.</span><span>1</span><span>0</span><span>0</span>
+            </h2>
+            <h2>
+                <span>seconds</span>
+                <span>since</span>
+                <span>1st</span>
+                <span>T1MESCULPTURE</span>
+            </h2>
+        </div>
         <h1 style="align-self: center; text-align: center">T1MESCULPTURES</h1>
         <h2 style="align-self: end; text-align: right">etlaM</h2>
     </header>
@@ -54,7 +64,15 @@
         // Format numbers with commas for readability (e.g., 1,234,567)
         const formattedSeconds = secondsElapsed.toLocaleString();
 
-        displayElement.innerText = `${formattedSeconds}`;
+        // Generate HTML with spans and inline CSS variables
+        let html = '';
+        [...formattedSeconds].forEach((char, index) => {
+            // We set --i directly here so the animation knows the order immediately
+            html += `<span style="--i:${index}">${char}</span>`;
+        });
+
+        // Inject into the DOM
+        displayElement.innerHTML = html;
     }
 
     // Update every 1000ms (1 second)
@@ -62,5 +80,16 @@
 
     // Initialize immediately
     updateCounter();
+
+
+    // Text Wipe Setup -> Delay Elements
+    const rows = document.querySelectorAll('#timer h2');
+
+    rows.forEach(row => {
+    const spans = row.querySelectorAll('span');
+        spans.forEach((span, i) => {
+            span.style.setProperty('--i', i);
+        });
+    });
 </script>
 {% endblock %}
