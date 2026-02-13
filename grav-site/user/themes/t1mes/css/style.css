@@ -194,11 +194,11 @@ main {
 }
 
 #timer h2:nth-child(2) > span{
-    transform: translateY(100%);
+    transform: translateY(125%);
 }
 
 #timer:hover h2:nth-child(1) > span{
-    transform: translateY(-100%);
+    transform: translateY(-125%);
 }
 
 #timer:hover h2:nth-child(2) > span{
