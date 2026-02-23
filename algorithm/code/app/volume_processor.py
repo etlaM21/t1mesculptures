@@ -47,7 +47,7 @@ def fill_pointcloud(pointcloud, frames, scaled_height, scaled_width):
     return padded_pointcloud
 
 
-def scale_volume(pointcloud, totalFrames, fps, scaled_height, scaled_width):
+def scale_volume(pointcloud, totalFrames, fps, scaled_height, scaled_width, smooth_zoom=True):
     # Calculate the desired height of the Z-axis in pixels
     maxHeight = (totalFrames / fps) * max(scaled_width, scaled_height)
     # Calculate the zoom factor for the Z-axis
@@ -56,7 +56,15 @@ def scale_volume(pointcloud, totalFrames, fps, scaled_height, scaled_width):
 
     # Use scipy's zoom to resample the volume to the correct proportions
     # This creates a new volume where each voxel is roughly a cube
-    rescaled_volume = zoom(pointcloud, (z_zoom_factor, 1, 1), order=1)
+    if smooth_zoom:
+        print("Smoothing Z-axis layers...")
+        # order=1 blends slices together for a smoother surface
+        rescaled_volume = zoom(pointcloud, (z_zoom_factor, 1, 1), order=1)
+    else:
+        print("🥞 Using nearest-neighbor scaling, not interpolating...")
+        # order=0 creates hard cubic borders by duplicating slices
+        rescaled_volume = zoom(pointcloud, (z_zoom_factor, 1, 1), order=0)
+
     return rescaled_volume
 
 

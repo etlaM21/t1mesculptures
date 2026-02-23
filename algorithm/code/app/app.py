@@ -111,6 +111,7 @@ class T1mesculpturesApp(tk.Tk):
             "smooth_iters": tk.IntVar(value=50),
             "decimation": tk.DoubleVar(value=0.9),
             "up_axis": tk.StringVar(value="Z"),
+            "smooth_zoom": tk.BooleanVar(value=True),
         }
 
         # --- Main Layout ---
@@ -195,6 +196,12 @@ class T1mesculpturesApp(tk.Tk):
         self.create_slider(data_frame, "Threshold:", self.vars["threshold"], 0, 255, 0, slider_id="threshold")
         self.create_slider(data_frame, "FPS:", self.vars["fps"], 1, 240, 1)
         self.create_slider(data_frame, "Scale Factor:", self.vars["scale_factor"], 0.1, 1.0, 2)
+
+        ttk.Checkbutton(
+            data_frame, 
+            text="Smooth Scaling (No Hard Voxel Layers / Pancaking)", 
+            variable=self.vars["smooth_zoom"]
+        ).grid(row=3, column=0, columnspan=3, sticky="w", padx=5, pady=(10, 0))
 
         # --- 3. Smoothing Frame ---
         smooth_frame = ttk.LabelFrame(frame, text="Smoothing", padding=10)
@@ -779,7 +786,7 @@ class T1mesculpturesApp(tk.Tk):
                 )
                 pointcloud = volume_processor.fill_pointcloud(pointcloud, self.frames_list, h, w)
                 rescaled_volume = volume_processor.scale_volume(
-                    pointcloud, totalFrames, params['fps'], h, w
+                    pointcloud, totalFrames, params['fps'], h, w, smooth_zoom=params['smooth_zoom']
                 )
                 smoothed_volume = volume_processor.smooth_volume(
                     rescaled_volume, params['smooth_method'], **params['smooth_kwargs']
