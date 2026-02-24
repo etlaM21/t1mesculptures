@@ -2,7 +2,7 @@
 title: GENESIS
 number: ts.000
 date: '2025-10-26'
-duration: 1.25s
+duration: 2.5s
 framesper: 120fps
 project_image:
     GENESIS_Showcase_01.png:
